@@ -1,0 +1,99 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+  GIT_SUBMODULE_STRATEGY: recursive
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+
+stages:
+#  - lint
+  - test
+  - publish
+  - release
+
+default:
+  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/python:3.9
+  before_script:
+    - pip install --upgrade pip
+   
+
+#lint:
+# stage: lint
+# script:
+#   - pylint --rcfile=./.pylintrc src
+#   - pylint --rcfile=./.pylintrc tests
+
+test:
+  stage: test
+  script:
+    - cd ./src
+    - python3 -m unittest tests.test_api
+
+publish:
+  stage: publish
+  image:
+    name: gcr.io/kaniko-project/executor:v1.18.0-debug
+    entrypoint: [""]
+  tags:
+    - saas-linux-medium-amd64
+  before_script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  script:
+    - >
+        /kaniko/executor
+        --context "${CI_PROJECT_DIR}"
+        --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+        --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
+        --cache=true
+        --cache-copy-layers=true
+        --cache-ttl=336h
+        --cleanup
+        --compressed-caching=false
+
+  except:
+    refs:
+      - main
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
+
+publish-main:
+  stage: publish
+  image:
+    name: gcr.io/kaniko-project/executor:v1.18.0-debug
+    entrypoint: [""]
+  tags:
+    - saas-linux-medium-amd64
+  before_script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  script:
+    - >
+        /kaniko/executor
+        --context "${CI_PROJECT_DIR}"
+        --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+        --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+        --destination "$CI_REGISTRY_IMAGE:latest"
+        --cache=true
+        --cache-copy-layers=true
+        --cache-ttl=336h
+        --cleanup
+        --compressed-caching=false
+
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
+
+release:
+  stage: release
+  before_script: [""]
+  script:
+    - cictl exec release python src
+  only:
+    - main
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
