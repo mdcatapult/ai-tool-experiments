@@ -2,7 +2,7 @@ from crewai import Agent, Task, Crew, Process
 import os
 from open_ai_config.openai_config import OPENAI_API_KEY
 
-# import the OpenAI API key from the environment
+# import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 
