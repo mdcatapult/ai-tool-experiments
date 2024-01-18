@@ -1,10 +1,11 @@
 from crewai import Agent, Task, Crew, Process
 import os
-from dotenv import load_dotenv
+from klein_config import get_config
 
-load_dotenv()
+config = get_config()
 
-os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_API")
+
+os.environ["OPENAI_API_KEY"] = config.get("OPENAI_API_KEY")
 
 researcher = Agent(
     role="Researcher",
