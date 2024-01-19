@@ -50,11 +50,11 @@ class CrewAI:
             process=Process.sequential,
         )
 
-    def kickoff(self):
+    def start_simulation(self):
         return self.crew.kickoff()
 
 
 if __name__ == "__main__":
     crew = CrewAI()
-    result = crew.kickoff()
+    result = crew.start_simulation()
     print(result)
