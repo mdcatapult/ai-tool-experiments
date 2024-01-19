@@ -39,6 +39,7 @@ class Tasks:
         )
 
 
+#  Crew is used to define the agents and tasks that will be used in the simulation
 class CrewAI:
     def __init__(self):
         self.crew = Crew(
