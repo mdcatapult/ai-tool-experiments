@@ -1,0 +1,2 @@
+crewai==0.1.32
+klein_config==4.0.1
