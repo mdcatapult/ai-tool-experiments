@@ -1,9 +1,17 @@
 from crewai import Agent, Task, Crew, Process
-import os
+from langchain_community.llms import Ollama
+from langchain_community.tools import DuckDuckGoSearchRun
 from open_ai_config.openai_config import OPENAI_API_KEY
+import os
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+
+# instantiate the Ollama language model , you can use different models
+ollama_llm = Ollama(model="llama2")
+
+# using the DuckDuckGoSearchRun tool
+search_tool = DuckDuckGoSearchRun()
 
 
 # Agent roles are defined and instantiated here
@@ -15,6 +23,8 @@ class AgentRoles:
             backstory="You are a researcher at a university. You are working on a new AI algorithm that will help people with their daily lives.",
             verbose=True,
             allow_delegation=False,
+            tools=[search_tool],
+            llm=ollama_llm,
         )
 
         self.writer = Agent(
@@ -23,6 +33,7 @@ class AgentRoles:
             backstory="You are a writer at a university. You are writing a paper about a new AI algorithm that will help people with their daily lives.",
             verbose=True,
             allow_delegation=False,
+            llm=ollama_llm,
         )
 
 
@@ -39,6 +50,7 @@ class Tasks:
         )
 
 
+# Instructor
 #  Crew is used to define the agents and tasks that will be used in the simulation
 class CrewAI:
     def __init__(self):
