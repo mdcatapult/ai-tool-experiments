@@ -6,7 +6,7 @@ ATTACH DATABASE 'MDC.db' AS MDC;
 CREATE TABLE IF NOT EXISTS MDC.Employees (
     id INTEGER PRIMARY KEY,
     column1 TEXT,
-    column2 INTEGER
+    column2 TEXT
 );
 
 -- Insert sample data
