@@ -2,6 +2,8 @@ from crewai import Agent, Task, Crew, Process
 from langchain_community.llms import Ollama
 from langchain_community.tools import DuckDuckGoSearchRun
 from config.openai_config import OPENAI_API_KEY
+from langchain_openai import ChatOpenAI
+
 import os
 
 # import the OpenAI API key from the os environment
@@ -26,7 +28,7 @@ class AgentRoles:
             verbose=True,
             allow_delegation=False,
             tools=[search_tool],
-            llm=ollama_llm,
+            llm=llm,
         )
 
         self.writer = Agent(
@@ -37,7 +39,7 @@ class AgentRoles:
             You translate complex scientific concepts into easy to understand language.""",
             verbose=True,
             allow_delegation=False,
-            llm=ollama_llm,
+            llm=llm,
         )
 
 
