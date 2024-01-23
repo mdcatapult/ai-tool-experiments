@@ -1,6 +1,8 @@
 from crewai import Agent, Task, Crew, Process
 from langchain_community.llms import Ollama
 from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_openai import ChatOpenAI
+
 from src.open_ai_config.openai_config import OPENAI_API_KEY
 import os
 
@@ -8,8 +10,8 @@ import os
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # instantiate the Ollama language model , you can use different models
-ollama_llm = Ollama(model="llama2", verbose=True, temperature=0.6)
-
+# llm = Ollama(model="llama2", verbose=True, temperature=0.6)
+llm=ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
 # using the DuckDuckGoSearchRun tool
 search_tool = DuckDuckGoSearchRun()
 
@@ -26,7 +28,7 @@ class AgentRoles:
             verbose=True,
             allow_delegation=False,
             tools=[search_tool],
-            llm=ollama_llm,
+            llm=llm,
         )
 
         self.writer = Agent(
@@ -37,7 +39,7 @@ class AgentRoles:
             You translate complex scientific concepts into easy to understand language.""",
             verbose=True,
             allow_delegation=False,
-            llm=ollama_llm,
+            llm=llm,
         )
 
 
