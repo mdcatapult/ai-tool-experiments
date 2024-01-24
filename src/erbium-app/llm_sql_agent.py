@@ -2,7 +2,6 @@
 from langchain_community.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_openai import OpenAI
-
 from open_ai_config.openai_config import OPENAI_API_KEY
 import os
 
@@ -10,7 +9,7 @@ import os
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///MDC.db"
+db_uri = "sqlite:///erbium-app/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)
