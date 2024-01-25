@@ -16,4 +16,4 @@
 13. After downloading Ollama , pull the model parameter used in the erbium-ai.py or llm_sql_agent in this case llama2
     run this command `ollama run llama2`
 14. To run each application, run the following command in the root directory of the repository
-    `python -m src.erbium-app.erbium-ai` or `python -m src.erbium-app.llm_sql_agent` or `python -m src.erbium-app.llama-index`
+    `python -m src.erbium-app.erbium-ai` or `python -m src.erbium-app.llm_sql_agent` or `python -m src.erbium-app.llama-index` or `python -m src.erbium-app.llama-index-open`

@@ -13,3 +13,4 @@ postgres:
 
 data_import_directory: "absolute-path-to-data-directory"
 data_persist_directory: "absolute-path-to-data-persistence-directory"
+project_file_path: "absolute-path-to-project-file"
