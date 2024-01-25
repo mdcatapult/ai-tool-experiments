@@ -8,3 +8,4 @@ langchain_openai<0.0.3
 psycopg2-binary==2.8.6
 pandas==2.2.0
 duckduckgo-search==4.2
+llama-index==0.9.37.post1

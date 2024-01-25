@@ -2,7 +2,6 @@
 open_ai:
    open_api_key: "OPEN_API_KEY"
 
-
 # PATH TO DATABSE credentials
 postgres:
   database_user: "coshh_tester"
@@ -11,3 +10,6 @@ postgres:
   database_name: "informatics"
   database_schema: "chemicals"
   database_port: "5432"
+
+data_import_directory: "absolute-path-to-data-directory"
+data_persist_directory: "absolute-path-to-data-persistence-directory"

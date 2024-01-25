@@ -20,26 +20,22 @@ search_tool = DuckDuckGoSearchRun()
 class AgentRoles:
     def __init__(self):
         self.researcher = Agent(
-            role="Senior Drug Discovery scientist",
-            goal="Uncover cutting edge advancements in medicines discovery technology and drugs",
-            backstory="""You work at a major pharmaceutical drug discovery company.
-            Your expertise lies in identifying how existing and new technologies
-            can be applied in the field of medicines discovery.""",
+            role="Researcher",
+            goal="Research new AI insights",
+            backstory="You are a researcher at a university. You are working on a new AI algorithm that will help people with their daily lives.",
             verbose=True,
             allow_delegation=False,
             tools=[search_tool],
-            llm=llm,
+            llm=ollama_llm,
         )
 
         self.writer = Agent(
             role="Writer",
-            goal="Write compelling and succinct summaries of the latest advancements in medicines discovery.",
-            backstory="""You are a world famous writer with a passion for science and technology.
-            You have been asked to write a blog post on the latest advancements in medicines discovery. 
-            You translate complex scientific concepts into easy to understand language.""",
+            goal="Write a paper about the new AI algorithm",
+            backstory="You are a writer at a university. You are writing a paper about a new AI algorithm that will help people with their daily lives.",
             verbose=True,
             allow_delegation=False,
-            llm=llm,
+            llm=ollama_llm,
         )
 
 
@@ -47,16 +43,12 @@ class AgentRoles:
 class Tasks:
     def __init__(self):
         self.task1 = Task(
-            description="""Conduct a comprehensive review of the latest medical research over the last 2 months. Identify
-            breakthrough technologies and new drugs that are being developed.""",
-            agent=AgentRoles().researcher
+            description="Investigate the latest medical research",
+            agent=AgentRoles().researcher,
         )
 
         self.task2 = Task(
-            description="""Using any insights provided, develop an engaging blog post style summary that
-            highlights current advancements in the field of medicines discovery. Avoid words that are too complex and provide layman
-            descriptions of any new technologies involved. Your final answer should contain at least 1 paragraph per technology.""",
-            agent=AgentRoles().writer
+            description="Investigate the latest AI research", agent=AgentRoles().writer
         )
 
 
@@ -69,7 +61,7 @@ class CrewAI:
             agents=[AgentRoles().researcher, AgentRoles().writer],
             tasks=[Tasks().task1, Tasks().task2],
             verbose=2,
-            # process=Process.sequential,
+            process=Process.sequential,
         )
 
     def start_simulation(self):
