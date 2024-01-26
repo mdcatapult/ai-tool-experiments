@@ -2,12 +2,12 @@
 ATTACH DATABASE 'MDC.db' AS MDC;
 
 -- create Album table
-CREATE TABLE IF NOT EXISTS MDC.Album(
+CREATE TABLE IF NOT EXISTS Album(
   album_id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
-  artist TEXT NOT NULL,
+  artist_id INTEGER,
   Year INTEGER NOT NULL,
-  FOREIGN KEY (Artist) REFERENCES Artist(ArtistID)
+  FOREIGN KEY (artist_id) REFERENCES Artist(artist_id)
 );
 
 
