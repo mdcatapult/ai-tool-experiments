@@ -9,7 +9,7 @@ from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_openai import ChatOpenAI
 
 # local imports and python builtins
-from open_ai_config.openai_config import OPENAI_API_KEY
+from config.openai_config import OPENAI_API_KEY
 from operator import itemgetter
 import os
 
