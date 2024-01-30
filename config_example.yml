@@ -1,2 +1,13 @@
+# key for openai
 open_ai:
    open_api_key: "OPEN_API_KEY"
+
+
+# PATH TO DATABSE credentials
+postgres:
+  database_user: "coshh_tester"
+  database_password: "james"
+  database_host: "postgrescluster01.medcat.local"
+  database_name: "informatics"
+  database_schema: "chemicals"
+  database_port: "5432"
