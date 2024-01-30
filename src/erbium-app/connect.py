@@ -8,7 +8,19 @@ def connect(config):
         # connecting to the PostgreSQL server
         with psycopg2.connect(**config) as conn:
             print("Connected to the PostgreSQL server.")
-            return conn
+
+            cursor = conn.cursor()
+            query = "SELECT * FROM coshh.chemical;"
+            cursor.execute(query)
+            # Fetch all rows
+            rows = cursor.fetchall()
+
+            # Iterate over the rows and print the results
+            for row in rows:
+                print(row)
+
+        cursor.close()
+        conn.close()
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
 

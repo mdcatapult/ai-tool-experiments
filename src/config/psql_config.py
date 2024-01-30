@@ -2,7 +2,7 @@ from configparser import ConfigParser
 
 
 def load_config(
-    filename="/src/database.ini",
+    filename="/Users/temitope.femitemiola/Documents/erbium/erbium/src/database.ini",
     section="postgresql",
 ):
     parser = ConfigParser()

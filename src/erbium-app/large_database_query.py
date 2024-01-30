@@ -11,6 +11,7 @@ from langchain_openai import ChatOpenAI
 from config.openai_config import OPENAI_API_KEY
 from operator import itemgetter
 import os
+from typing import List
 
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
@@ -42,8 +43,6 @@ The tables are:
 
 Music
 Business"""
-
-from typing import List
 
 
 def get_tables(categories: List[Table]) -> List[str]:
