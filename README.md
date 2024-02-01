@@ -18,7 +18,8 @@
 14. To run each application, run one of the following commands in the root directory of the repository
     * `python -m src.erbium-app.erbium-ai`
     * `python -m src.erbium-app.llm_sql_agent`
-    * `python -m src.erbium-app.llama-index`
-    * `python -m src.erbium-app.llama-index-open`
-    * `python -m src.erbium-app.langchain-agent conversation`
-    * `python -m src.erbium-app.langchain-agent retrieval`
+    * `python -m src.erbium-app.llama-index` - uses openAI
+    * `python -m src.erbium-app.llama-index-open` - uses llama2
+    * `python -m src.erbium-app.langchain-agent conversation` - uses openAI
+    * `python -m src.erbium-app.langchain-agent retrieval` - uses openAI
+    * `python -m src.erbium-app.langchain-agent agent` - uses openAI
