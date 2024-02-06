@@ -19,7 +19,7 @@ llm = ChatOpenAI(model="gpt-3.5-turbo-1106", temperature=0)
 
 
 # Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///erbium-app/MDC.db"
+db_uri = "sqlite:///app/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)

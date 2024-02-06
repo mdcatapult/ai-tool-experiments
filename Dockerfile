@@ -18,7 +18,7 @@ RUN pip3 install -r requirements.txt
 COPY src/ /srv
 EXPOSE 8080
 
-CMD ["python", "erbium-app/connect.py"]
+CMD ["python3", "-m", "app.main", "--common=app/config.yml"]
 
 
 
