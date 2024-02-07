@@ -13,3 +13,9 @@ openapi-pydantic==0.4.0
 pydantic==2.6.0
 faiss-cpu==1.7.4
 beautifulsoup4==4.12.3
+sentence-transformers==2.2.2
+psycopg2
+pgvector==0.2.4
+sqlalchemy==2.0.25
+asyncpg==0.29.0
+llama-cpp-python==0.2.39
