@@ -1,17 +1,9 @@
 # imports from langchain community and langchain core packages
-from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain.agents.agent_types import AgentType
-from langchain.agents.format_scratchpad.openai_tools import (
-    format_to_openai_tool_messages,
-)
-from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
-from langchain.chains.openai_tools import create_extraction_chain_pydantic
 from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-
-
 from langchain_core.prompts import (
     ChatPromptTemplate,
     FewShotPromptTemplate,
@@ -21,7 +13,7 @@ from langchain_core.prompts import (
 )
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import BaseTool, StructuredTool, tool
+from langchain.tools import tool
 
 
 # local imports and python builtins
@@ -34,9 +26,8 @@ from config.openai_config import (
     DATABASE_PORT,
     DATABASE_SCHEMA_NAME,
 )
-from operator import itemgetter
+
 import os
-import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 from typing import List, Dict
@@ -151,6 +142,10 @@ def query_examples() -> List[Dict]:
             "query": "SELECT * FROM chemical WHERE cupboard LIKE '%specific cupboard%';",
         },
         {
+            "input": "what chemicals or find chemicals which were added recently and who last updated the chemical table?",
+            "query": "SELECT * FROM chemical WHERE added > CURRENT_DATE - INTERVAL '30 days' AND last_updated_by is not null;",
+        },
+        {
             "input": "Find chemicals with a specific lab location.",
             "query": "SELECT * FROM chemical WHERE lab_location LIKE '%specific lab location%';",
         },
@@ -228,7 +223,7 @@ class SystemMessageAndPromptTemplate:
         few_shot_prompt = FewShotPromptTemplate(
             example_selector=query_selector,
             example_prompt=PromptTemplate.from_template(
-                "User input: {input}\nSQL query: {query}"
+                "User input: {input}\n SQL query: {query}"
             ),
             input_variables=["input", "dialect", "top_k"],
             prefix=self.system_prefix,
@@ -280,9 +275,12 @@ def main():
         verbose=True,
         prompt=prompt_val,
     )
-    query = agent_executor.invoke({"input": get_non_alphanumeric_input()})
-    print(query)
-    # print(pd.read_sql(query, engine).to_string())
+    try:
+        query = agent_executor.invoke({"input": get_non_alphanumeric_input()})
+        print(query)
+    except Exception as e:
+        print(e)
+        exit()
 
 
 if __name__ == "__main__":
