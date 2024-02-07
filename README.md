@@ -23,3 +23,4 @@
     * `python -m src.erbium-app.langchain-agent conversation` - uses openAI
     * `python -m src.erbium-app.langchain-agent retrieval` - uses openAI
     * `python -m src.erbium-app.langchain-agent agent` - uses openAI
+    * `python -m src.erbium-app.llama-pg-vector --method index` - or `--method query --query "Ask a question about the indexed docs"`. Needs a running pg db with pgvector installed.
