@@ -1,32 +1,25 @@
-from langchain_openai import ChatOpenAI
-from llama_index import VectorStoreIndex, SimpleDirectoryReader, download_loader, load_index_from_storage, \
-    StorageContext, OpenAIEmbedding
-from pathlib import Path
-import os
-
-from llama_index.extractors import TitleExtractor, SummaryExtractor
-from llama_index.ingestion import IngestionPipeline
-from llama_index.node_parser import SentenceSplitter
-from llama_index.schema import MetadataMode
-from llama_index.llms import LlamaCPP
-from llama_index.query_engine import RetrieverQueryEngine
-
-from llama_index import SimpleDirectoryReader, StorageContext, ServiceContext
-from llama_index.indices.vector_store import VectorStoreIndex
-from llama_index.vector_stores import PGVectorStore
-import textwrap
-import openai
-import psycopg2
-from sqlalchemy import make_url
-from llama_index.embeddings import HuggingFaceEmbedding
 import argparse
+import os
+from pathlib import Path
+
+import psycopg2
+from llama_index import ServiceContext
+from llama_index import download_loader
+from llama_index.embeddings import HuggingFaceEmbedding
+from llama_index.indices.vector_store import VectorStoreIndex
+from llama_index.ingestion import IngestionPipeline
+from llama_index.llms import LlamaCPP
+from llama_index.node_parser import SentenceSplitter
+from llama_index.vector_stores import PGVectorStore
+from sqlalchemy import make_url
 
 from src.open_ai_config.openai_config import OPENAI_API_KEY, DATA_IMPORT_DIRECTORY
-from .vector_db_retriever import VectorDBRetriever
 
 
 class LLamaTest:
-
+    """
+    This class contains methods to index and query documents using the LlamaIndex tool.
+    """
     connection_string = "postgresql://postgres:postgres@localhost:5432"
     db_name = "documents_vector_db"
     conn = psycopg2.connect(connection_string)
@@ -47,6 +40,22 @@ class LLamaTest:
         return vector_store
 
     def index(self):
+        """Indexes a folder of docx word documents into a Postgresql vector store.
+
+        1. An in ingestion pipeline is created which contains a HuggingFaceEmbedding model along with a
+        SentenceSplitter.
+
+        2. It uses LlamaIndex tool DocxReader to load .docx files from
+        DATA_IMPORT_DIRECTORY
+
+        3. It runs the ingest pipeline on the list of documents to split and embeds the document texts
+        and stores them in the vector store.
+
+        Parameters: None
+
+        Returns: bool: The function returns True signifying the successful completion of the process.
+        """
+
         print("Indexing documents")
 
         with self.conn.cursor() as c:
@@ -55,20 +64,17 @@ class LLamaTest:
 
         # export the OpenAI API key
         os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
-        # llm = ChatOpenAI(model_name="gpt-4", temperature=1.0, max_tokens=1000)
         embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
         pipeline = IngestionPipeline(
             transformations=[
                 SentenceSplitter(chunk_size=1024, chunk_overlap=20),
-                # TitleExtractor(llm=llm),
-                # SummaryExtractor(llm=llm),
                 embed_model,
             ],
             vector_store=self.get_vector_store(),
         )
 
-        DocxReader = download_loader("DocxReader")
-        docx_reader = DocxReader()
+        docx_reader = download_loader("DocxReader")
+        docx_reader = docx_reader()
 
         documents = []
         # store it for later
@@ -76,27 +82,24 @@ class LLamaTest:
             try:
                 word_document = docx_reader.load_data(file=doc)
                 documents = documents + word_document
-            except:
-                print(f"Error loading document {doc}")
+            except Exception as e:
+                print(f"Error loading document {doc} {e}")
         pipeline.run(documents=documents)
 
         print("Documents are indexed")
         return True
 
     def query(self, query: str):
+        """Query the vector store for a given query
+
+        Parameters: query (str): The search query
+
+        Returns: response (Response): The response from the query
+        """
         print(f"Querying for: {query}")
         embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
-        # service_context = ServiceContext.from_defaults(
-        #     llm=self.getLLM(), embed_model=embed_model
-        # )
         vector_store = self.get_vector_store()
-        # retriever = VectorDBRetriever(
-        #     vector_store, embed_model, query_mode="default", similarity_top_k=2
-        # )
         service_context = ServiceContext.from_defaults(embed_model=embed_model)
-        # query_engine = RetrieverQueryEngine.from_args(
-        #     retriever, service_context=service_context
-        # )
         index = VectorStoreIndex.from_vector_store(
             vector_store, service_context=service_context
         )
@@ -105,6 +108,12 @@ class LLamaTest:
         return response
 
     def get_docx_filepaths(self, directory_path):
+        """Load docx files from a particular path
+
+        Parameters: directory_path (str): The path to the directory containing the docx files
+
+        Returns: list: A list of filepaths of the docx files
+        """
         filepaths = []
 
         for filename in os.listdir(directory_path):
@@ -114,7 +123,13 @@ class LLamaTest:
 
         return filepaths
 
-    def getLLM(self) -> LlamaCPP:
+    def get_llm(self) -> LlamaCPP:
+        """Create a LlamaCPP LLM object with the model llama-2-13b-chat-GGUF
+
+        Parameters: None
+
+        Returns: llama_index.llms.LlamaCPP: The LlamaCPP object
+        """
         model_url = "https://huggingface.co/TheBloke/Llama-2-13B-chat-GGUF/resolve/main/llama-2-13b-chat.Q4_0.gguf"
         llm = LlamaCPP(
             # You can pass in the URL to a GGML model to download it automatically
@@ -136,9 +151,25 @@ class LLamaTest:
 
 
 if __name__ == "__main__":
+    """This script allows the user to run specific methods of the 'LLamaTest' class by using command-line arguments.
+
+    The user can run either the 'index' or the 'query' method.
+
+    Usage:
+
+    1. To call the 'index' method:
+    python script.py --method index
+
+    2. To call the 'query' method:
+    python script.py --method query --query "your search query"
+
+    Args:
+        --method: Required. Select the method to run, either 'index' or 'query'.
+        --query: Required when method= 'query'. Enter the search query.
+    """
     parser = argparse.ArgumentParser(description="Run methods in LangChainAgent")
     parser.add_argument(
-    "--method", choices=["index", "query"], help="Select the method to run", required=True
+        "--method", choices=["index", "query"], help="Select the method to run", required=True
     )
     parser.add_argument(
         "--query", type=str, help="Enter the query to search", required=False

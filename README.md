@@ -50,4 +50,4 @@ CREATE TABLE cro_vector_db (
     capabilities_vector vector(768)-- number of dimensions
 );
 ```
-3. Manually, create the extension on PSQL if it doesn't: `CREATE EXTENSION IF NOT EXISTS vector;` Then exit the psql shell and the docker image.
+3. Manually, create the extension on PSQL if it doesn't already exist: `CREATE EXTENSION IF NOT EXISTS vector;` Then exit the psql shell and the docker image.
