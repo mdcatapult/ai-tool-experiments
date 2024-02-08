@@ -23,4 +23,31 @@
     * `python -m src.erbium-app.langchain-agent conversation` - uses openAI
     * `python -m src.erbium-app.langchain-agent retrieval` - uses openAI
     * `python -m src.erbium-app.langchain-agent agent` - uses openAI
-    * `python -m src.erbium-app.llama-pg-vector --method index` - or `--method query --query "Ask a question about the indexed docs"`. Needs a running pg db with pgvector installed.
+    * `python -m src.erbium-app.llama-pg-vector --method index` - or `--method query --query "Ask a question about the indexed docs"`. Needs a running pg db with pgvector installed. See section below.
+
+## Starting the PostgreSQL vector database
+
+1. execute docker compose:
+```bash
+cd postgres_files
+docker-compose up --build
+```
+P.S. If used before then you may need to remove existing volumes Either `docker-compose down -v` or `docker volume ls` and `docker volume rm the-volume-name` before running the command above.
+
+2. create a Table on PSQL
+```bash
+docker exec -it vectorexample-postgres-1 /bin/bash
+psql -U postgres
+```
+
+Then:
+
+```sql
+CREATE TABLE cro_vector_db (
+    id bigserial PRIMARY KEY,
+    id_cro VARCHAR(50),
+    cap_description TEXT,
+    capabilities_vector vector(768)-- number of dimensions
+);
+```
+3. Manually, create the extension on PSQL if it doesn't: `CREATE EXTENSION IF NOT EXISTS vector;` Then exit the psql shell and the docker image.
