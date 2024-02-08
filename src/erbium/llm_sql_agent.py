@@ -3,7 +3,7 @@ from langchain_community.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_openai import OpenAI
 
-from open_ai_config.openai_config import OPENAI_API_KEY
+from config.config import OPENAI_API_KEY
 import os
 
 # import the OpenAI API key from the os environment
