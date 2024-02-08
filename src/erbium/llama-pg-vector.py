@@ -13,7 +13,7 @@ from llama_index.node_parser import SentenceSplitter
 from llama_index.vector_stores import PGVectorStore
 from sqlalchemy import make_url
 
-from src.open_ai_config.openai_config import OPENAI_API_KEY, DATA_IMPORT_DIRECTORY
+from src.config.config import OPENAI_API_KEY, DATA_IMPORT_DIRECTORY
 
 
 class LLamaTest:

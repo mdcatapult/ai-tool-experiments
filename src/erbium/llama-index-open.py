@@ -3,7 +3,7 @@ from llama_index.llms import Ollama
 from llama_index.embeddings import HuggingFaceEmbedding
 from pathlib import Path
 import os
-from src.open_ai_config.openai_config import PROJECT_FILE_PATH, DATA_PERSIST_DIRECTORY
+from src.config.config import PROJECT_FILE_PATH, DATA_PERSIST_DIRECTORY
 
 import logging
 import sys

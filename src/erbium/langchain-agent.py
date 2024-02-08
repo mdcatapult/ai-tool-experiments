@@ -18,7 +18,7 @@ from langchain.agents import AgentExecutor
 
 import argparse
 
-from src.open_ai_config.openai_config import OPENAI_API_KEY
+from src.config.config import OPENAI_API_KEY
 
 
 class LangchainAgent:
