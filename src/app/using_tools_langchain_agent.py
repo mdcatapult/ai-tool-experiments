@@ -1,7 +1,13 @@
 # imports from langchain community and langchain core packages
+from langchain import MathChain, LLMMathChain
 from langchain.agents.agent_types import AgentType
+from langchain.agents.tools import Tool
 from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
-from langchain_community.utilities import SQLDatabase
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForToolRun,
+    CallbackManagerForToolRun,
+)
+
 from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.prompts import (
@@ -13,7 +19,8 @@ from langchain_core.prompts import (
 )
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import tool
+from langchain.sql_database import SQLDatabase
+from langchain.tools import tool, StructuredTool
 
 
 # local imports and python builtins
@@ -30,8 +37,7 @@ from config.openai_config import (
 import os
 import psycopg2
 from sqlalchemy import create_engine
-from typing import List, Dict
-
+from typing import List, Dict, Optional, Type
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -50,6 +56,25 @@ llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 # instantiate the SQLDatabase object
 db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
+
+
+tools = [
+    Tool(
+        name="SearchTool",
+        func=search.run,
+        description="useful for when you need to answer questions about current events. You should ask targeted questions",
+    ),
+    Tool(
+        name="MathTool",
+        func=llm_math_chain.run,
+        description="useful for when you need to answer questions about math",
+    ),
+    Tool(
+        name="Product_Database",
+        func=db.run,
+        description="useful for when you need to answer questions about products.",
+    ),
+]
 
 
 def query_examples() -> List[Dict]:
@@ -159,20 +184,17 @@ query_selector = SemanticSimilarityExampleSelector.from_examples(
 )
 
 
-def get_non_alphanumeric_input():
+def get_non_alphanumeric_input() -> str:
     while True:
         user_input = input("Enter your text (non-numeric characters allowed): ")
 
         # Check if the input contains only spaces and non-alphanumeric characters
-
-        if ((not word.isalnum()) for word in user_input.split()):
-
+        if all(word.isalpha() or word.isspace() for word in user_input):
             return user_input
         else:
             print("Invalid input. Please enter only spaces and non-numeric characters.")
             check_response = input("Do you want to continue? (y/n): ")
             if check_response.lower() != "y":
-                print("Goodbye from your friendly SQL agent! :) ")
                 exit()
             else:
                 continue
@@ -185,22 +207,68 @@ class Table(BaseModel):
     name: str = Field(..., description="Name of table in SQL database.")
 
 
-# create a tool to list the tables in the database
-@tool("list-table-tool", args_schema=Table)
-def get_tables(categories: List[Table]) -> List[str]:
-    """Get the tables in the schema."""
-    tables = []
-    for category in categories:
-        if category.name == "chemical":
-            tables.extend(
-                [
-                    "chemical",
-                    "chemical_to_hazard",
-                ]
-            )
-        elif category.name == "audit":
-            tables.extend(["audit_coshh_logs"])
-    return tables
+# create tools that can be used to interact with the database
+class Tools:
+    """Tools for interacting with the database."""
+
+    # create a tool to list the tables in the database
+    @tool("list-table-tool", args_schema=Table)
+    def get_table_names(self) -> List[str]:
+        print("Getting table names: ", db.get_usable_table_names())
+        return db.get_usable_table_names()
+
+    # create a tool to get the quantity column in the database
+    @tool("quantity-column-tool", args_schema=Table)
+    def get_quantity_column(self) -> Optional[str]:
+        for table in self.get_table_names():
+            if table == "chemical":
+                for column in db.get_column_names(table):
+                    if column == "quantity":
+                        quantity_column = column
+                    else:
+                        quantity_column = None
+        return quantity_column
+
+
+class QuantityQueryInput(BaseModel):
+    quantity_column: int = Field(
+        ...,
+        description="Name of a column called quantity in the chemical table. if query return values \
+        in grams, milligrams, kilograms, liters, milliliters, etc. then the quantity will be divided by 1000\
+        1g = 1000mg, 1kg = 1000g, 1L = 1000mL, etc.",
+    )
+
+
+# create a tool to calculate the quantity of chemicals in the database
+class CalculateQuantityColumnTool(BaseModel):
+    """Calculate the quantity of chemicals in the database."""
+
+    quantity_column = Tools.get_quantity_column()
+
+    def divide_or_multiply_quantity_column(
+        self, quantity: int, metric_unit: str
+    ) -> int:
+        """Divide the quantity by 1000."""
+        if metric_unit.endswith("g"):
+            return quantity / 1000
+
+        elif metric_unit.endswith("mg"):
+            return quantity / 1000000
+
+        elif metric_unit.endswith("kg"):
+            return quantity * 1000
+
+        elif metric_unit.endswith("L"):
+            return quantity * 1000
+
+        elif metric_unit.endswith("mL"):
+            return quantity / 1000
+
+        else:
+            return quantity
+
+
+# TODO: select from the quantity column where the name of chemical is specific by the user and return the quantity and the unit using the CalculateQuantityColumnTool
 
 
 class SystemMessageAndPromptTemplate:
@@ -266,13 +334,13 @@ def main():
         llm=llm,
         agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         verbose=True,
+        tools=tools,
         prompt=prompt_val,
-        handle_parsing_errors=True,
     )
     try:
         query = agent_executor.invoke({"input": get_non_alphanumeric_input()})
         print(query)
-        print("\nWould you like to run another query? (y/n): ", end="")
+        print("\nWould like to run another query? (y/n)")
         if input().lower() == "y":
             main()
         else:
@@ -281,6 +349,7 @@ def main():
 
     except Exception as e:
         print(e)
+        exit()
 
 
 if __name__ == "__main__":
