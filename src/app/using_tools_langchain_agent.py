@@ -36,6 +36,7 @@ from config.openai_config import (
 
 import os
 import psycopg2
+import re
 from sqlalchemy import create_engine
 from typing import List, Dict, Optional, Type
 
@@ -231,7 +232,7 @@ class Tools:
 
 
 class QuantityQueryInput(BaseModel):
-    quantity_column: int = Field(
+    quantity_column: str = Field(
         ...,
         description="Name of a column called quantity in the chemical table. if query return values \
         in grams, milligrams, kilograms, liters, milliliters, etc. then the quantity will be divided by 1000\
@@ -243,32 +244,49 @@ class QuantityQueryInput(BaseModel):
 class CalculateQuantityColumnTool(BaseModel):
     """Calculate the quantity of chemicals in the database."""
 
-    quantity_column = Tools.get_quantity_column()
+    name = "calculate-quantity-column-tool"
+    description = "Calculate the total quantity of each chemical in the database."
+    args_schema: Type[BaseModel] = QuantityQueryInput
 
-    def divide_or_multiply_quantity_column(
-        self, quantity: int, metric_unit: str
-    ) -> int:
-        """Divide the quantity by 1000."""
-        if metric_unit.endswith("g"):
-            return quantity / 1000
+    def convert_to_mL(volume_string):
+        # Use regular expression to extract numerical value and unit
+        quantity_column_match = re.match(r"([\d.]+)([A-Za-z]+)", volume_string)
 
-        elif metric_unit.endswith("mg"):
-            return quantity / 1000000
+        if quantity_column_match:
+            numerical_value = float(quantity_column_match.group(1))
+            unit = quantity_column_match.group(2).lower()
 
-        elif metric_unit.endswith("kg"):
-            return quantity * 1000
-
-        elif metric_unit.endswith("L"):
-            return quantity * 1000
-
-        elif metric_unit.endswith("mL"):
-            return quantity / 1000
-
+            if unit == "l":
+                return numerical_value * 1000  # Convert liters to milliliters
+            elif unit == "ml":
+                return numerical_value  # Already in milliliters
+            elif unit == "gal":
+                return numerical_value * 3785.41  # Convert gallons to milliliters
+            else:
+                raise ValueError(
+                    "Unsupported unit. Only 'L', 'mL', and 'gal' are supported."
+                )
         else:
-            return quantity
+            raise ValueError("Invalid volume string format.")
 
 
-# TODO: select from the quantity column where the name of chemical is specific by the user and return the quantity and the unit using the CalculateQuantityColumnTool
+# Example usage:
+volume_string = "2.5L"
+volume_mL = convert_to_mL(volume_string)
+print(volume_mL)  # Output: 2500.0 mL
+
+volume_string = "500mL"
+volume_mL = convert_to_mL(volume_string)
+print(volume_mL)  # Output: 500.0 mL
+
+volume_string = "1gal"
+volume_mL = convert_to_mL(volume_string)
+print(volume_mL)  # Output: 3785.41 mL
+
+
+# TODO: select from the quantity column where the name of chemical is specific by the user
+class QuantityQueryTool(BaseModel):
+    """Query the quantity of chemicals in the database."""
 
 
 class SystemMessageAndPromptTemplate:
