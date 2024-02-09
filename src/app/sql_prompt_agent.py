@@ -27,6 +27,7 @@ from config.openai_config import (
     DATABASE_SCHEMA_NAME,
 )
 
+from logging import getLogger
 import os
 import psycopg2
 from sqlalchemy import create_engine
@@ -280,7 +281,8 @@ def main():
             exit()
 
     except Exception as e:
-        print(e)
+        getLogger(__name__).exception(e)
+        exit()
 
 
 if __name__ == "__main__":
