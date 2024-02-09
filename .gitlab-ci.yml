@@ -9,10 +9,12 @@ cache:
 
 
 stages:
+  - secret-detection
 #  - lint
   - test
   - publish
   - release
+  - container-scanning
 
 default:
   image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/python:3.9
@@ -97,3 +99,31 @@ release:
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
+
+container_scanning:
+  stage: container-scanning
+  allow_failure: false
+  variables:
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  inherit:
+    default: false
+
+dependency_scanning:
+  stage: test
+  allow_failure: false
+
+sast:
+  stage: test
+  allow_failure: false
+
+secret_detection:
+  stage: secret-detection
+  allow_failure: false
+  inherit:
+    default: false
+
+include:
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
