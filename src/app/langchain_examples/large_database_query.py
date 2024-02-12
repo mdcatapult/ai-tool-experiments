@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 
 
 # local imports and python builtins
-from config.config import OPENAI_API_KEY
+from src.config.config import OPENAI_API_KEY
 from operator import itemgetter
 import os
 from typing import List

@@ -28,7 +28,7 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from sqlalchemy import create_engine
 
 # local imports and python builtins
-from config.config import (
+from src.config.config import (
     OPENAI_API_KEY,
     DATABASE_NAME,
     DATABASE_PASS,

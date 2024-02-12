@@ -33,7 +33,7 @@ class LLamaTest:
             storage_context = StorageContext.from_defaults(persist_dir=DATA_PERSIST_DIRECTORY)
             index = load_index_from_storage(storage_context)
         query_engine = index.as_query_engine()
-        response = query_engine.query("What is each of the projects about?")
+        response = query_engine.query("What is the Asclepius project about and who is involved in it?")
         return response
 
     def get_docx_filepaths(self, directory_path):
