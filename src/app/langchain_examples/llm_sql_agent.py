@@ -2,6 +2,7 @@
 from langchain_community.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_openai import OpenAI
+
 from config.config import OPENAI_API_KEY
 import os
 
