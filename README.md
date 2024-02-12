@@ -30,6 +30,7 @@ They are there to demonstrate the capabilities of the tools and to provide a sta
     * `python -m src.app.langchain_examples.langchain_agent conversation` - uses openAI. Demonstrates a chain of prompts enhanced with a web page as RAG
     * `python -m src.app.langchain_examples.langchain_agent retrieval` - uses openAI. Demonstrates single prompt enhanced with a web page as RAG
     * `python -m src.app.langchain_examples.langchain_agent agent` - uses openAI. Demonstrates using a tool (DuckDuckGo) along with a prompt to answer some simple questions.
+    * `python -m src.app.langchain_examples.open_api_langchain` - uses openAI. Use the DSP atlas openAPI to query the database. This is a bit of a mess and doesn't really work.
 
 ## Starting the PostgreSQL vector database
 
