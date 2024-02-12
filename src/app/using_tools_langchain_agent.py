@@ -1,19 +1,20 @@
 # imports from langchain community and langchain core packages
+
 import os
 import re
+from logging import getLogger
 from typing import List, Dict, Optional, Type
 
 from langchain.agents.agent_types import AgentType
-from langchain.agents import load_tools
 from langchain.agents.tools import Tool
-from langchain.pydantic_v1 import BaseModel, Field
-from langchain.sql_database import SQLDatabase
-from langchain.tools import tool
-from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
 from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
     AsyncCallbackManagerForToolRun,
 )
+from langchain.pydantic_v1 import BaseModel, Field
+from langchain.sql_database import SQLDatabase
+from langchain.tools import tool, StructuredTool, DuckDuckGoSearchRun
+from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
 from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.prompts import (
@@ -24,13 +25,10 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain.pydantic_v1 import BaseModel, Field
-from langchain.sql_database import SQLDatabase
-from langchain.tools import tool, StructuredTool, DuckDuckGoSearchRun
-
+from sqlalchemy import create_engine
 
 # local imports and python builtins
-from config.openai_config import (
+from config.config import (
     OPENAI_API_KEY,
     DATABASE_NAME,
     DATABASE_PASS,
@@ -39,12 +37,6 @@ from config.openai_config import (
     DATABASE_PORT,
     DATABASE_SCHEMA_NAME,
 )
-from logging import getLogger
-import os
-import psycopg2
-import re
-from sqlalchemy import create_engine
-from typing import List, Dict, Optional, Type
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY

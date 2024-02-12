@@ -3,7 +3,7 @@ from llama_index.llms import Ollama
 from llama_index.embeddings import HuggingFaceEmbedding
 from pathlib import Path
 import os
-from src.open_ai_config.openai_config import PROJECT_FILE_PATH, DATA_PERSIST_DIRECTORY
+from src.config.config import PROJECT_FILE_PATH, DATA_PERSIST_DIRECTORY
 
 import logging
 import sys
@@ -11,10 +11,12 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
-
 class LLamaTestOpen:
 
     def start(self):
+        """Use llama2 and a local file based vector store to index documents and ask a question over them.
+        The question is a bit MDC specific and expects that the docs were project PIDs so alter as you see fit.
+        """
 
         # export the OpenAI API key
         # os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -27,9 +29,7 @@ class LLamaTestOpen:
 
         if not os.path.exists(DATA_PERSIST_DIRECTORY):
             # load the documents and create the index
-            # documents = SimpleDirectoryReader(DATA_IMPORT_DIRECTORY).load_data()
             documents = []
-            # store it for later
             try:
                 word_document = docx_reader.load_data(file=Path(PROJECT_FILE_PATH))
                 documents = documents + word_document

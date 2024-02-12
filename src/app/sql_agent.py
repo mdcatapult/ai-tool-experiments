@@ -10,7 +10,7 @@ from langchain_openai import ChatOpenAI
 from sqlalchemy import create_engine
 
 # local imports and python builtins
-from config.openai_config import (
+from config.config import (
     OPENAI_API_KEY,
     DATABASE_NAME,
     DATABASE_PASS,

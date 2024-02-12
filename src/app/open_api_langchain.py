@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 import os
 import yaml
 
-from src.open_ai_config.openai_config import OPENAI_API_KEY, OPENAPI_YAML_DIR
+from config.config import OPENAI_API_KEY, OPENAPI_YAML_DIR
 
 class OpenAPITest:
 
