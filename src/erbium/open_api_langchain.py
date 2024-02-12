@@ -8,6 +8,10 @@ import yaml
 from src.config.config import OPENAI_API_KEY, OPENAPI_YAML_DIR
 
 class OpenAPITest:
+    """
+    Use the OpenAPI agent to reason over the DSP Atlas [Transcriptomics API](https://gitlab.com/medicines-discovery-catapult/informatics/dsp-atlas/dsp-atlas-transcriptomics-api).
+    You may need to run the actual API as well.
+    """
 
     def start(self):
         os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY

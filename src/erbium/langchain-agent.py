@@ -1,22 +1,21 @@
-from langchain.tools.retriever import create_retriever_tool
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
-from langchain.chains import create_history_aware_retriever
-from langchain_core.prompts import MessagesPlaceholder
-from langchain_core.messages import HumanMessage, AIMessage
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain_openai import ChatOpenAI
-from langchain import hub
-from langchain.agents import create_openai_functions_agent
-from langchain.agents import AgentExecutor
-
 import argparse
+
+from langchain import hub
+from langchain.agents import AgentExecutor
+from langchain.agents import create_openai_functions_agent
+from langchain.chains import create_history_aware_retriever
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.tools.retriever import create_retriever_tool
+from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.vectorstores import FAISS
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import MessagesPlaceholder
+from langchain_openai import ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
 
 from src.config.config import OPENAI_API_KEY
 

@@ -1,5 +1,4 @@
 # import the necessary packages fron langchain community and langchain core packages
-# python -m langchain_community.tools.sql_database.tool --help
 from langchain_community.utilities import SQLDatabase
 from langchain.chains import create_sql_query_chain
 from langchain_core.output_parsers import StrOutputParser

@@ -1,13 +1,13 @@
 # imports from langchain community and langchain core packages
-from langchain.chains import create_sql_query_chain
-from langchain.chains.openai_tools import create_extraction_chain_pydantic
-from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
+import os
+
+import psycopg2
 from langchain.agents.agent_types import AgentType
+from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_openai import ChatOpenAI
-
-import pandas as pd
+from sqlalchemy import create_engine
 
 # local imports and python builtins
 from config.openai_config import (
@@ -19,12 +19,6 @@ from config.openai_config import (
     DATABASE_PORT,
     DATABASE_SCHEMA_NAME,
 )
-from operator import itemgetter
-import os
-import psycopg2
-from sqlalchemy import create_engine
-from typing import List
-
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -47,8 +41,9 @@ db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
-# connect to the PostgreSQL database server
 class ConnectPSQLDatabase:
+    """Connect to the PostgreSQL database using the coshh schema and ask some questions"""
+
     def connect(self, config):
         """Connect to the PostgreSQL database server"""
         try:
@@ -72,9 +67,8 @@ class ConnectPSQLDatabase:
             print(error)
 
 
-# create a Table class that inherits from BaseModel
 class Table(BaseModel):
-    """Table in SQL database."""
+    """Represents a table in SQL database."""
 
     name: str = Field(..., description="Name of table in SQL database.")
 
