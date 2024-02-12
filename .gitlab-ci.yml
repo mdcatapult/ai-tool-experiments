@@ -1,6 +1,13 @@
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
   GIT_SUBMODULE_STRATEGY: recursive
+  OPEN_API_KEY: "$OPEN_API_KEY"
+  DATABASE_USER: "$DATABASE_USER"
+  DATABASE_PASSWORD: "$DATABASE_PASSWORD"
+  DATABASE_HOST: "$DATABASE_HOST"
+  DATABASE_PORT: "$DATABASE_PORT"
+  DATABASE_NAME: "$DATABASE_NAME"
+  DATABASE_SCHEMA_NAME: "$DATABASE_SCHEMA_NAME"
 
 cache:
   paths:
@@ -47,6 +54,13 @@ publish:
     - >
         /kaniko/executor
         --context "${CI_PROJECT_DIR}"
+        --build-arg OPEN_API_KEY=$OPEN_API_KEY
+        --build-arg DATABASE_USER=$DATABASE_USER
+        --build-arg DATABASE_PASSWORD=$DATABASE_PASSWORD
+        --build-arg DATABASE_HOST=$DATABASE_HOST
+        --build-arg DATABASE_PORT=$DATABASE_PORT
+        --build-arg DATABASE_NAME=$DATABASE_NAME
+        --build-arg DATABASE_SCHEMA_NAME=$DATABASE_SCHEMA_NAME
         --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
         --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
         --cache=true

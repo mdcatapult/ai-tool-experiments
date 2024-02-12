@@ -21,15 +21,15 @@ They are there to demonstrate the capabilities of the tools and to provide a sta
 12. Make sure you have [sqlite installed](https://www.sqlite.org/download.html) (`brew install sqlite` should do it on a mac) and [Ollama](https://ollama.ai) downloaded on your machine and running, before running any of the commands
 13. After downloading Ollama download the llama2 model used in the ai-insights-agent and the medicines-discovery-agents llm_sql_agent by running this command `ollama run llama2`. You can use this llm model in any of the examples but you would need to change the code.
 14. To run each application, run one of the following commands in the root directory of the repository
-    * `python -m src.erbium-app.ai-insights-agent` - uses openAI. Uses crew-ai agents to converse with each other and gather facts around AI based topics
-    * `python -m src.erbium-app.medicines-discovery-agents` - uses openAI. Uses crew-ai agents to converse with each other and gather facts around drug discovery based topics
-    * `python -m src.erbium-app.llm_sql_agent` - uses openAI. Trains an llm about a specific sql schema that you can then free text query over. 
-    * `python -m src.erbium-app.llama-index` - uses openAI. Vectorises documents into a local file based store and runs a query over the stored documents.
-    * `python -m src.erbium-app.llama-index-open` - uses llama2. Uses open source model to vectorise documents and runs a query over the stored documents.
-    * `python -m src.erbium-app.langchain-agent conversation` - uses openAI. Demonstrates a chain of prompts enhanced with a web page as RAG
-    * `python -m src.erbium-app.langchain-agent retrieval` - uses openAI. Demonstrates single prompt enhanced with a web page as RAG
-    * `python -m src.erbium-app.langchain-agent agent` - uses openAI. Demonstrates using a tool (DuckDuckGo) along with a prompt to answer some simple questions.
-    * `python -m src.erbium-app.llama-pg-vector --method index` - or `--method query --query "Ask a question about the indexed docs"`. Vectorise docs using pgvector and query over them. Needs a running pg db with pgvector installed. See section below.
+    * `python -m src.app.crewai_examples.ai-insights-agent` - uses openAI. Uses crew-ai agents to converse with each other and gather facts around AI based topics
+    * `python -m src.app.crewai_examples.medicines-discovery-agents` - uses openAI. Uses crew-ai agents to converse with each other and gather facts around drug discovery based topics
+    * `python -m src.app.llama_examples.llama-index` - uses openAI. Vectorises documents into a local file based store and runs a query over the stored documents.
+    * `python -m src.app.llama_examples.llama-index-open` - uses llama2. Uses open source model to vectorise documents and runs a query over the stored documents.
+    * `python -m src.app.llama_examples.llama-pg-vector --method index` - or `--method query --query "Ask a question about the indexed docs"`. Vectorise docs using pgvector and query over them. Needs a running pg db with pgvector installed. See section below.
+    * `python -m src.app.langchain_examples.llm_sql_agent` - uses openAI. Trains an llm about a specific sql schema that you can then free text query over.
+    * `python -m src.app.langchain_examples.langchain-agent conversation` - uses openAI. Demonstrates a chain of prompts enhanced with a web page as RAG
+    * `python -m src.app.langchain_examples.langchain-agent retrieval` - uses openAI. Demonstrates single prompt enhanced with a web page as RAG
+    * `python -m src.app.langchain_examples.langchain-agent agent` - uses openAI. Demonstrates using a tool (DuckDuckGo) along with a prompt to answer some simple questions.
 
 ## Starting the PostgreSQL vector database
 

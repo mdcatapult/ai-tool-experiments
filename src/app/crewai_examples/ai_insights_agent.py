@@ -2,13 +2,14 @@ from crewai import Agent, Task, Crew, Process
 from langchain_community.llms import Ollama
 from langchain_community.tools import DuckDuckGoSearchRun
 from config.config import OPENAI_API_KEY
+
 import os
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # instantiate the Ollama language model , you can use different models
-ollama_llm = Ollama(model="llama2")
+ollama_llm = Ollama(model="llama2", temperature=0.6, verbose=True)
 
 # using the DuckDuckGoSearchRun tool
 search_tool = DuckDuckGoSearchRun()
