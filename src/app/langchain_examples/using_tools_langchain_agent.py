@@ -57,8 +57,8 @@ db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
-# create a DuckDuckGoSearchRun class that inherits from StructuredTool
 def query_examples() -> List[Dict]:
+    """Example queries and a text that describes what they represent. Use these to train the db LLM tool"""
     return [
         {
             "input": "List all the chemicals in the chemical table.",

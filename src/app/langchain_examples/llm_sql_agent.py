@@ -9,7 +9,7 @@ import os
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///app/MDC.db"
+db_uri = "sqlite:///data/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)

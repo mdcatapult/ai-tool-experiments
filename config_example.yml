@@ -2,7 +2,7 @@
 open_ai:
   open_api_key: "YOUR_ACTUAL_OPEN_API_KEY"
 
-# PATH TO DATABSE credentials
+# database credentials
 postgres:
   database_user: "coshh_tester"
   database_password: "james"
