@@ -1,9 +1,6 @@
 # imports from langchain community and langchain core packages
 from langchain.chains import LLMChain
-
-from langchain.agents.agent_types import AgentType
 from langchain.agents import (
-    load_tools,
     Tool,
     AgentExecutor,
     AgentOutputParser,
@@ -17,23 +14,15 @@ from langchain.callbacks.manager import (
 from langchain.schema import HumanMessage, AgentAction, AgentFinish
 from langchain_community.vectorstores import FAISS
 from langchain_community.tools import DuckDuckGoSearchRun
-from langchain_core.callbacks.manager import trace_as_chain_group
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
-from langchain_core.messages import BaseMessage
 from langchain_core.prompts import (
     BaseChatPromptTemplate,
-    ChatPromptTemplate,
-    FewShotPromptTemplate,
-    MessagesPlaceholder,
-    PromptTemplate,
-    SystemMessagePromptTemplate,
 )
 
 from langchain_core.tools import ToolException
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain.sql_database import SQLDatabase
-from langchain.tools import tool, StructuredTool
 
 
 # local imports and python builtins
@@ -52,6 +41,7 @@ import psycopg2
 import re
 from sqlalchemy import create_engine
 from typing import List, Dict, Optional, Type, Union
+from langchain.tools import SQLDatabaseToolkit
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
