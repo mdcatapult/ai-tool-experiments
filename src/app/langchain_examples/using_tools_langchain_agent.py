@@ -10,7 +10,6 @@ from langchain.agents import (
     LLMSingleActionAgent,
 )
 from langchain.agents.tools import Tool
-from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
 from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
     AsyncCallbackManagerForToolRun,
@@ -38,7 +37,7 @@ from langchain.tools import tool, StructuredTool
 
 
 # local imports and python builtins
-from config.openai_config import (
+from src.config.config import (
     OPENAI_API_KEY,
     DATABASE_NAME,
     DATABASE_PASS,
@@ -79,6 +78,7 @@ def calculate(s: str):
 
 # create a DuckDuckGoSearchRun class that inherits from StructuredTool
 def query_examples() -> List[Dict]:
+    """Example queries and a text that describes what they represent. Use these to train the db LLM tool"""
     return [
         {
             "input": "List all the chemicals in the chemical table.",

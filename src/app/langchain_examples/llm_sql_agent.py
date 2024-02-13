@@ -2,14 +2,15 @@
 from langchain_community.utilities import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_openai import OpenAI
-from config.openai_config import OPENAI_API_KEY
+
+from src.config.config import OPENAI_API_KEY
 import os
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
-# Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///app/MDC.db"
+# Replace "sqlite:///MDC.DB" with your actual database URI. Note that '///' is a relative path and '////' is an absolute path
+db_uri = "sqlite:///data/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)

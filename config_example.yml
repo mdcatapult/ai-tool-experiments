@@ -1,9 +1,8 @@
 # key for openai
 open_ai:
-   open_api_key: "OPEN_API_KEY"
+  open_api_key: "YOUR_ACTUAL_OPEN_API_KEY"
 
-
-# PATH TO DATABSE credentials
+# database credentials
 postgres:
   database_user: "coshh_tester"
   database_password: "james"
@@ -11,3 +10,8 @@ postgres:
   database_name: "informatics"
   database_schema: "chemicals"
   database_port: "5432"
+
+data_import_directory: "/Users/me/Documents/project-documents" # Where the docx files are located that the llama-index, llama-index-open & llama-pg-vector classes use
+data_persist_directory: "/Users/me/data/ai-store" # Where llama-index & llama-index-open persist the vector store data
+project_file_path: "/Users/me/Documents/project-documents/A-Great-Project.docx" # The document that llama-index-open adds to the vector store
+openapi_yaml_dir: "/Users/me/code/ai-experiments/data" # The directory where the openapi yaml file for open_api_langchain class is located. It is hardcoded as tomics_api.yaml

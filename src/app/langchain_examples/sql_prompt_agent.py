@@ -17,7 +17,7 @@ from langchain.tools import tool
 
 
 # local imports and python builtins
-from config.openai_config import (
+from src.config.config import (
     OPENAI_API_KEY,
     DATABASE_NAME,
     DATABASE_PASS,
@@ -54,6 +54,7 @@ toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
 def query_examples() -> List[Dict]:
+    """Example queries and a text that describes what they represent. Use these to train the db LLM tool"""
     return [
         {
             "input": "List all the chemicals in the chemical table.",
@@ -161,6 +162,8 @@ query_selector = SemanticSimilarityExampleSelector.from_examples(
 
 
 def get_non_alphanumeric_input():
+    """Get user input and use it to ask questions of the db"""
+
     while True:
         user_input = input("Enter your text (non-numeric characters allowed): ")
 
@@ -181,7 +184,7 @@ def get_non_alphanumeric_input():
 
 # create a Table class that inherits from BaseModel
 class Table(BaseModel):
-    """Table in SQL database."""
+    """Represents a table in SQL database."""
 
     name: str = Field(..., description="Name of table in SQL database.")
 
@@ -205,6 +208,7 @@ def get_tables(categories: List[Table]) -> List[str]:
 
 
 class SystemMessageAndPromptTemplate:
+    """Create the prompt and template for the SQL agent to use"""
 
     def __init__(self):
         self.system_prefix = """You are an agent designed to interact with a SQL database.

@@ -1,5 +1,4 @@
 # import the necessary packages fron langchain community and langchain core packages
-# python -m langchain_community.tools.sql_database.tool --help
 from langchain_community.utilities import SQLDatabase
 from langchain.chains import create_sql_query_chain
 from langchain_core.output_parsers import StrOutputParser
@@ -9,7 +8,7 @@ from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_openai import ChatOpenAI
 
 # local imports and python builtins
-from config.openai_config import OPENAI_API_KEY
+from src.config.config import OPENAI_API_KEY
 from operator import itemgetter
 import os
 
@@ -17,7 +16,7 @@ import os
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///app/MDC.db"
+db_uri = "sqlite:///data/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)

@@ -8,7 +8,7 @@ from langchain_openai import ChatOpenAI
 
 
 # local imports and python builtins
-from config.openai_config import OPENAI_API_KEY
+from src.config.config import OPENAI_API_KEY
 from operator import itemgetter
 import os
 from typing import List
@@ -19,7 +19,7 @@ llm = ChatOpenAI(model="gpt-3.5-turbo-1106", temperature=0)
 
 
 # Replace "sqlite:///MDC.DB" with your actual database URI
-db_uri = "sqlite:///app/MDC.db"
+db_uri = "sqlite:///data/MDC.db"
 
 # instantiate the SQLDatabase object
 db = SQLDatabase.from_uri(db_uri)
