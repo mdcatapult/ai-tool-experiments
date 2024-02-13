@@ -209,29 +209,6 @@ class Table(BaseModel):
     name: str = Field(..., description="Name of table in SQL database.")
 
 
-# create tools that can be used to interact with the database
-# class Tools:
-#     """Tools for interacting with the database."""
-
-#     # create a tool to list the tables in the database
-#     @tool("list-table-tool", args_schema=Table)
-#     def get_table_names(self) -> List[str]:
-#         print("Getting table names: ", db.get_usable_table_names())
-#         return db.get_usable_table_names()
-
-#     # create a tool to get the quantity column in the database
-#     @tool("quantity-column-tool", args_schema=Table)
-#     def get_quantity_column(self) -> Optional[str]:
-#         for table in self.get_table_names():
-#             if table == "chemical":
-#                 for column in db.get_column_names(table):
-#                     if column == "quantity":
-#                         quantity_column = column
-#                     else:
-#                         quantity_column = None
-#         return quantity_column
-
-
 class QuantityQueryInput(BaseModel):
     quantity_column: str = Field(
         ...,
