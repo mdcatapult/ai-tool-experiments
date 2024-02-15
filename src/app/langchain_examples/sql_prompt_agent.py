@@ -33,6 +33,8 @@ import psycopg2
 from sqlalchemy import create_engine
 from typing import List, Dict
 
+# create a logger object
+Logger = getLogger(__name__)
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
@@ -285,7 +287,7 @@ def main():
             exit()
 
     except Exception as e:
-        getLogger(__name__).exception(e)
+        Logger.exception(e)
         exit()
 
 
