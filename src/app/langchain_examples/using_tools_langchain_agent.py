@@ -456,7 +456,7 @@ def main():
             ],
             max_execution_time=120,
             max_iterations=30,
-            # agent_executor_kwargs={"return_intermediate_steps": True},
+            agent_executor_kwargs={"handle_parsing_errors": True},
             handle_parsing_errors=_handle_error,
         )
 
