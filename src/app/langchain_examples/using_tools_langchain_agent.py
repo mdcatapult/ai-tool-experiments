@@ -481,7 +481,6 @@ def main():
     except Exception as e:
         print("An error occurred: ", e)
         Logger.exception(e)
-        exit()
 
 
 if __name__ == "__main__":
