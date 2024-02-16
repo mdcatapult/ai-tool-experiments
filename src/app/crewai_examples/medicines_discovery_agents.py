@@ -4,7 +4,7 @@ from crewai import Agent, Task, Crew
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_openai import ChatOpenAI
 
-from config.config import OPENAI_API_KEY
+from src.config.config import OPENAI_API_KEY
 
 # import the OpenAI API key from the os environment
 os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
