@@ -258,39 +258,34 @@ class CalculateQuantityColumnTool(BaseModel):
         digits = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
         if isinstance(digits, Exception):
             digits = volume_strings
-            for volume_string in digits:
-                print(volume_string)
-                quantity_column_match = re.findall(
-                    r"(\d+\.\d+[A-Za-z]+)", volume_string
-                )
-                for volume_match in quantity_column_match:
-                    numerical_value_search = re.match(
-                        r"([\d.]+)([A-Za-z]+)", volume_match
-                    )
-                    if numerical_value_search:
-                        numerical_value = float(numerical_value_search.group(1))
-                        metric_unit = numerical_value_search.group(2).lower()
-                        if metric_unit == "l":
-                            total_milliliters += (
-                                numerical_value * 1000
-                            )  # Convert liters to milliliters
-                        elif metric_unit == "g":
-                            total_milliliters += numerical_value * 1000
-                        elif metric_unit == "ml":
-                            total_milliliters += (
-                                numerical_value  # Already in milliliters
-                            )
-                        elif metric_unit == "gal":
-                            total_milliliters += (
-                                numerical_value * 3785.41
-                            )  # Convert gallons to milliliters
-                        else:
-                            raise ValueError(
-                                "Unsupported unit. Only 'L', 'mL', and 'gal' are supported."
-                            )
+
+        for volume_string in digits:
+            print(volume_string)
+            quantity_column_match = re.findall(r"(\d+\.\d+[A-Za-z]+)", volume_string)
+            for volume_match in quantity_column_match:
+                numerical_value_search = re.match(r"([\d.]+)([A-Za-z]+)", volume_match)
+                if numerical_value_search:
+                    numerical_value = float(numerical_value_search.group(1))
+                    metric_unit = numerical_value_search.group(2).lower()
+                    if metric_unit == "l":
+                        total_milliliters += (
+                            numerical_value * 1000
+                        )  # Convert liters to milliliters
+                    elif metric_unit == "g":
+                        total_milliliters += numerical_value * 1000
+                    elif metric_unit == "ml":
+                        total_milliliters += numerical_value  # Already in milliliters
+                    elif metric_unit == "gal":
+                        total_milliliters += (
+                            numerical_value * 3785.41
+                        )  # Convert gallons to milliliters
                     else:
-                        raise ValueError("Invalid volume string format.")
-            return f"{total_milliliters}"
+                        raise ValueError(
+                            "Unsupported unit. Only 'L', 'mL', and 'gal' are supported."
+                        )
+                else:
+                    raise ValueError("Invalid volume string format.")
+        return f"{total_milliliters}"
 
     # the call method to calculate the quantity of chemicals in the database
     def __call__(self, data: str):
