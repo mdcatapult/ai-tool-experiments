@@ -260,12 +260,11 @@ class CalculateQuantityColumnTool(BaseModel):
     def convert_to_mL(self, volume_strings) -> int:
         total_milliliters = 0
         try:
-            digits = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
+            numeric_value_search = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
         except TypeError:
-            digits = volume_strings
+            numeric_value_search = volume_strings
 
-        for volume_string in digits:
-            print(volume_string)
+        for volume_string in numeric_value_search:
             quantity_column_match = re.findall(r"(\d+\.\d+[A-Za-z]+)", volume_string)
             for volume_match in quantity_column_match:
                 numerical_value_search = re.match(r"([\d.]+)([A-Za-z]+)", volume_match)
