@@ -67,8 +67,12 @@ db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
-def ToolExceptionError(s: str):
-    raise ToolException("The search tool1 is not available.")
+def ToolExceptionError(s: str) -> None:
+    raise ToolException("The tool is not available.")
+
+
+def _handle_error(error) -> str:
+    return str(error)[:50]
 
 
 # create a DuckDuckGoSearchRun class that inherits from StructuredTool
@@ -253,7 +257,7 @@ class CalculateQuantityColumnTool(BaseModel):
                     the quantity of a specific chemical or set of chemicals"
     args_schema: Type[BaseModel] = QuantityQueryInput
 
-    def convert_to_mL(self, volume_strings):
+    def convert_to_mL(self, volume_strings) -> int:
         total_milliliters = 0
         try:
             digits = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
@@ -286,10 +290,10 @@ class CalculateQuantityColumnTool(BaseModel):
                         )
                 else:
                     raise ValueError("Invalid volume string format.")
-        return f"{total_milliliters}"
+        return total_milliliters
 
     # the call method to calculate the quantity of chemicals in the database
-    def __call__(self, data: str):
+    def __call__(self, data: str) -> int:
         query = f"SELECT quantity FROM chemical WHERE chemical_name IN ('{data}')"
         result = db.run_no_throw(query)
         print("\nresult", result)
@@ -338,7 +342,7 @@ class SystemMessageAndPromptTemplate:
         Here are some examples of user inputs and their corresponding SQL queries:"""
 
     # create a prompt for the SQL agent
-    def prompt(self):
+    def prompt(self) -> FewShotPromptTemplate:
         few_shot_prompt = FewShotPromptTemplate(
             example_selector=query_selector,
             example_prompt=PromptTemplate.from_template(
@@ -351,7 +355,7 @@ class SystemMessageAndPromptTemplate:
         return few_shot_prompt
 
     # create a full prompt for the SQL agent
-    def full_prompt(self):
+    def full_prompt(self) -> ChatPromptTemplate:
         full_prompt = ChatPromptTemplate.from_messages(
             [
                 SystemMessagePromptTemplate(prompt=self.prompt()),
@@ -391,7 +395,7 @@ class CustomOutputParser(AgentOutputParser):
 
 
 # get the tools that will be used by the SQL agent
-def get_function_tools():
+def get_function_tools() -> List[Tool]:
     tools = [
         Tool(
             name="SearchTool to search hazardous chemicals",
@@ -454,7 +458,7 @@ def main():
             max_execution_time=120,
             max_iterations=30,
             # agent_executor_kwargs={"return_intermediate_steps": True},
-            handle_parsing_errors=True,
+            handle_parsing_errors=_handle_error,
         )
 
         query = agent.invoke(
