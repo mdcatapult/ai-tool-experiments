@@ -58,3 +58,12 @@ CREATE TABLE cro_vector_db (
 );
 ```
 3. Manually, create the extension on PSQL if it doesn't already exist: `CREATE EXTENSION IF NOT EXISTS vector;` Then exit the psql shell and the docker image.
+
+
+## Example queries for the sql agent against the coshh db
+* Is there a chemical called something like Ethylene what lab and cupboard is it stored in and how much is in each cupboard
+* Is there a chemical like Nitrocellulose in the lab and what is the storage temperature
+* How many chemicals are there in total excluding expired ones
+* Is there a chemical like Nitrocellulose and what is the actual name
+* What is the name lab and cupboard of chemicals expiring in the next week
+* Are there any chemicals that have expired but have not been archived and what are their names lab and cupboard
