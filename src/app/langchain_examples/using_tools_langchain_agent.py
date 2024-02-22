@@ -1,6 +1,10 @@
 # imports from langchain community and langchain core packages
+import os
+import re
+from logging import getLogger
+from typing import List, Dict, Optional, Type, Union
+
 from langchain.agents import (
-    Tool,
     AgentOutputParser,
 )
 from langchain.agents.agent_types import AgentType
@@ -9,12 +13,13 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
     AsyncCallbackManagerForToolRun,
 )
+from langchain.pydantic_v1 import BaseModel, Field
 from langchain.schema import AgentAction, AgentFinish
+from langchain.sql_database import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
-from langchain_community.vectorstores import FAISS
 from langchain_community.tools import DuckDuckGoSearchRun
-from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+from langchain_community.vectorstores import FAISS
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -23,12 +28,9 @@ from langchain_core.prompts import (
     PromptTemplate,
     SystemMessagePromptTemplate,
 )
-
 from langchain_core.tools import ToolException
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain.pydantic_v1 import BaseModel, Field
-from langchain.sql_database import SQLDatabase
-
+from sqlalchemy import create_engine
 
 # local imports and python builtins
 from src.config.config import (
@@ -40,13 +42,6 @@ from src.config.config import (
     DATABASE_PORT,
     DATABASE_SCHEMA_NAME,
 )
-from logging import getLogger
-import os
-import psycopg2
-import re
-from sqlalchemy import create_engine, Result
-from typing import List, Dict, Optional, Type, Union, Sequence, Any
-
 
 Logger = getLogger(__name__)
 # import the OpenAI API key from the os environment
@@ -67,7 +62,7 @@ db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
-def ToolExceptionError(s: str) -> None:
+def tool_exception_error(s: str) -> None:
     raise ToolException("The tool is not available.")
 
 
@@ -75,7 +70,6 @@ def _handle_error(error) -> str:
     return str(error)[:50]
 
 
-# create a DuckDuckGoSearchRun class that inherits from StructuredTool
 def query_examples() -> List[Dict]:
     """Example queries and a text that describes what they represent. Use these to train the db LLM tool"""
     return [
@@ -178,7 +172,7 @@ def query_examples() -> List[Dict]:
     ]
 
 
-# query selector for the semantic similarity example selector
+# An in memory query selector that matches on semantic similarity
 query_selector = SemanticSimilarityExampleSelector.from_examples(
     query_examples(),
     OpenAIEmbeddings(),
@@ -325,7 +319,7 @@ class SystemMessageAndPromptTemplate:
         to search the internet such as which is the most hazardous chemical. The action to take, should be one of [{tool_names}]
 
         Action Input:  the input to the action
-        Obeservation:  the result of the action
+        Observation:  the result of the action
         ... (this Thought/Action/Action Input/Observation can repeat N times)
         Final Answer: the final answer to the original input question
 
@@ -381,7 +375,7 @@ class CustomOutputParser(AgentOutputParser):
         match = re.search(regex, llm_output, re.DOTALL)
         print("match", match)
 
-        # if it cant be parse the output should raise an error
+        # if the output can't be parsed then raise an error
         if not match:
             raise ValueError(f"Could not parse the output: {llm_output}")
 
@@ -399,13 +393,14 @@ def get_function_tools() -> List[Tool]:
         Tool(
             name="SearchTool to search hazardous chemicals",
             func=SearchTool.run,
-            description="useful for when you need to answer questions about current events. You should ask targeted questions",
+            description="useful for when you need to answer questions how hazardous a chemical is. You should ask "
+                        "targeted questions",
         ),
         Tool(
             name="CalculateQuantityColumnTool to calculate the quantity of chemicals in the database",
             func=CalculateQuantityColumnTool().__call__,
-            description="useful for when you need to answer questions about the quantity of chemicals in the database and \
-                         the quantity of a specific chemical or set of chemicals",
+            description="useful for when you need to answer questions about the quantity of chemicals in the database "
+                        "and the quantity of a specific chemical or set of chemicals",
             handle_tool_error=True,
         ),
     ]
