@@ -19,6 +19,10 @@ from langchain_openai import OpenAIEmbeddings
 
 from src.config.config import OPENAI_API_KEY
 
+import os
+
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+
 
 class LangchainAgent:
 

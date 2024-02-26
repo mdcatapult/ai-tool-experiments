@@ -2,13 +2,13 @@ version: "3"
 services:
   postgres:
     build:
-      context: ./postgres
+      context: .
       dockerfile: postgres.Dockerfile
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres_files/vector_extension.sql:/docker-entrypoint-initdb.d/0-vector_extension.sql
+      - ./vector_extension.sql:/docker-entrypoint-initdb.d/0-vector_extension.sql
 
     environment:
       - POSTGRES_USER=postgres
