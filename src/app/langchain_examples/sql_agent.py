@@ -17,7 +17,7 @@ from src.config.config import (
     DATABASE_USER,
     DATABASE_HOST,
     DATABASE_PORT,
-    DATABASE_SCHEMA_NAME,
+    DATABASE_SCHEMA,
 )
 
 # import the OpenAI API key from the os environment
@@ -27,7 +27,7 @@ os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 db_uri = f"postgresql+psycopg2://{DATABASE_USER}:{DATABASE_PASS}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 engine = create_engine(
     db_uri,
-    connect_args={"options": "-csearch_path={}".format(DATABASE_SCHEMA_NAME)},
+    connect_args={"options": "-csearch_path={}".format(DATABASE_SCHEMA)},
 )
 
 

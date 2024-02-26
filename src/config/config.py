@@ -14,6 +14,6 @@ DATABASE_NAME = config.get("postgres.database_name")
 DATABASE_USER = config.get("postgres.database_user")
 DATABASE_HOST = config.get("postgres.database_host")
 DATABASE_PORT = config.get("postgres.database_port")
-DATABASE_SCHEMA_NAME = config.get("postgres.database_schema_name")
+DATABASE_SCHEMA_NAME = config.get("postgres.database_schema")
 
 OPENAPI_YAML_DIR = config.get("openapi_yaml_dir")

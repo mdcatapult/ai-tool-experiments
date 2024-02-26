@@ -97,6 +97,8 @@ class LLamaTest:
         Returns: response (Response): The response from the query
         """
         print(f"Querying for: {query}")
+        os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+        os.environ["TOKENIZERS_PARALLELISM"] = "false"
         embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
         vector_store = self.get_vector_store()
         service_context = ServiceContext.from_defaults(embed_model=embed_model)

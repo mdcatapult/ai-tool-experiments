@@ -1,10 +1,6 @@
 # imports from langchain community and langchain core packages
-import os
-import re
-from logging import getLogger
-from typing import List, Dict, Optional, Type, Union
-
 from langchain.agents import (
+    Tool,
     AgentOutputParser,
 )
 from langchain.agents.agent_types import AgentType
@@ -13,13 +9,12 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
     AsyncCallbackManagerForToolRun,
 )
-from langchain.pydantic_v1 import BaseModel, Field
 from langchain.schema import AgentAction, AgentFinish
-from langchain.sql_database import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain_community.agent_toolkits.sql.toolkit import SQLDatabaseToolkit
-from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.vectorstores import FAISS
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -28,9 +23,12 @@ from langchain_core.prompts import (
     PromptTemplate,
     SystemMessagePromptTemplate,
 )
+
 from langchain_core.tools import ToolException
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from sqlalchemy import create_engine
+from langchain.pydantic_v1 import BaseModel, Field
+from langchain.sql_database import SQLDatabase
+
 
 # local imports and python builtins
 from src.config.config import (
@@ -42,6 +40,13 @@ from src.config.config import (
     DATABASE_PORT,
     DATABASE_SCHEMA_NAME,
 )
+from logging import getLogger
+import os
+import psycopg2
+import re
+from sqlalchemy import create_engine, Result
+from typing import List, Dict, Optional, Type, Union, Sequence, Any
+
 
 Logger = getLogger(__name__)
 # import the OpenAI API key from the os environment
@@ -62,14 +67,11 @@ db = SQLDatabase(engine=engine)
 toolkit = SQLDatabaseToolkit(db=db, llm=llm)
 
 
-def tool_exception_error(s: str) -> None:
-    raise ToolException("The tool is not available.")
+def ToolExceptionError(s: str):
+    raise ToolException("The search tool1 is not available.")
 
 
-def _handle_error(error) -> str:
-    return str(error)[:50]
-
-
+# create a DuckDuckGoSearchRun class that inherits from StructuredTool
 def query_examples() -> List[Dict]:
     """Example queries and a text that describes what they represent. Use these to train the db LLM tool"""
     return [
@@ -172,7 +174,7 @@ def query_examples() -> List[Dict]:
     ]
 
 
-# An in memory query selector that matches on semantic similarity
+# query selector for the semantic similarity example selector
 query_selector = SemanticSimilarityExampleSelector.from_examples(
     query_examples(),
     OpenAIEmbeddings(),
@@ -225,14 +227,14 @@ class SearchTool(BaseModel):
     """Use the tool. when you need to answer questions about which chemicals in the database is hazardous. """
 
     def run(
-            self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool."""
         search = DuckDuckGoSearchRun()
         return search.run(query)
 
     async def _arun(
-            self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
+        self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("search-tool does not support async")
@@ -251,14 +253,14 @@ class CalculateQuantityColumnTool(BaseModel):
                     the quantity of a specific chemical or set of chemicals"
     args_schema: Type[BaseModel] = QuantityQueryInput
 
-    def convert_to_ml(self, volume_strings) -> int:
+    def convert_to_mL(self, volume_strings):
         total_milliliters = 0
-        try:
-            numeric_value_search = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
-        except TypeError:
-            numeric_value_search = volume_strings
+        digits = re.findall(r"(\d\.\d+[A-Za-z]+)", volume_strings)
+        if isinstance(digits, Exception):
+            digits = volume_strings
 
-        for volume_string in numeric_value_search:
+        for volume_string in digits:
+            print(volume_string)
             quantity_column_match = re.findall(r"(\d+\.\d+[A-Za-z]+)", volume_string)
             for volume_match in quantity_column_match:
                 numerical_value_search = re.match(r"([\d.]+)([A-Za-z]+)", volume_match)
@@ -267,7 +269,7 @@ class CalculateQuantityColumnTool(BaseModel):
                     metric_unit = numerical_value_search.group(2).lower()
                     if metric_unit == "l":
                         total_milliliters += (
-                                numerical_value * 1000
+                            numerical_value * 1000
                         )  # Convert liters to milliliters
                     elif metric_unit == "g":
                         total_milliliters += numerical_value * 1000
@@ -275,7 +277,7 @@ class CalculateQuantityColumnTool(BaseModel):
                         total_milliliters += numerical_value  # Already in milliliters
                     elif metric_unit == "gal":
                         total_milliliters += (
-                                numerical_value * 3785.41
+                            numerical_value * 3785.41
                         )  # Convert gallons to milliliters
                     else:
                         raise ValueError(
@@ -283,14 +285,14 @@ class CalculateQuantityColumnTool(BaseModel):
                         )
                 else:
                     raise ValueError("Invalid volume string format.")
-        return total_milliliters
+        return f"{total_milliliters}"
 
     # the call method to calculate the quantity of chemicals in the database
-    def __call__(self, data: str) -> int:
+    def __call__(self, data: str):
         query = f"SELECT quantity FROM chemical WHERE chemical_name IN ('{data}')"
         result = db.run_no_throw(query)
         print("\nresult", result)
-        res = self.convert_to_ml.__call__(result)
+        res = self.convert_to_mL.__call__(result)
         print("res", res)
         return res
         # return sum(count)
@@ -319,7 +321,7 @@ class SystemMessageAndPromptTemplate:
         to search the internet such as which is the most hazardous chemical. The action to take, should be one of [{tool_names}]
 
         Action Input:  the input to the action
-        Observation:  the result of the action
+        Obeservation:  the result of the action
         ... (this Thought/Action/Action Input/Observation can repeat N times)
         Final Answer: the final answer to the original input question
 
@@ -335,7 +337,7 @@ class SystemMessageAndPromptTemplate:
         Here are some examples of user inputs and their corresponding SQL queries:"""
 
     # create a prompt for the SQL agent
-    def prompt(self) -> FewShotPromptTemplate:
+    def prompt(self):
         few_shot_prompt = FewShotPromptTemplate(
             example_selector=query_selector,
             example_prompt=PromptTemplate.from_template(
@@ -348,7 +350,7 @@ class SystemMessageAndPromptTemplate:
         return few_shot_prompt
 
     # create a full prompt for the SQL agent
-    def full_prompt(self) -> ChatPromptTemplate:
+    def full_prompt(self):
         full_prompt = ChatPromptTemplate.from_messages(
             [
                 SystemMessagePromptTemplate(prompt=self.prompt()),
@@ -375,7 +377,7 @@ class CustomOutputParser(AgentOutputParser):
         match = re.search(regex, llm_output, re.DOTALL)
         print("match", match)
 
-        # if the output can't be parsed then raise an error
+        # if it cant be parse the output should raise an error
         if not match:
             raise ValueError(f"Could not parse the output: {llm_output}")
 
@@ -388,19 +390,18 @@ class CustomOutputParser(AgentOutputParser):
 
 
 # get the tools that will be used by the SQL agent
-def get_function_tools() -> List[Tool]:
+def get_function_tools():
     tools = [
         Tool(
             name="SearchTool to search hazardous chemicals",
             func=SearchTool.run,
-            description="useful for when you need to answer questions how hazardous a chemical is. You should ask "
-                        "targeted questions",
+            description="useful for when you need to answer questions about current events. You should ask targeted questions",
         ),
         Tool(
             name="CalculateQuantityColumnTool to calculate the quantity of chemicals in the database",
             func=CalculateQuantityColumnTool().__call__,
-            description="useful for when you need to answer questions about the quantity of chemicals in the database "
-                        "and the quantity of a specific chemical or set of chemicals",
+            description="useful for when you need to answer questions about the quantity of chemicals in the database and \
+                         the quantity of a specific chemical or set of chemicals",
             handle_tool_error=True,
         ),
     ]
@@ -451,8 +452,8 @@ def main():
             ],
             max_execution_time=120,
             max_iterations=30,
-            agent_executor_kwargs={"handle_parsing_errors": True},
-            handle_parsing_errors=_handle_error,
+            # agent_executor_kwargs={"return_intermediate_steps": True},
+            handle_parsing_errors=True,
         )
 
         query = agent.invoke(
@@ -476,7 +477,35 @@ def main():
     except Exception as e:
         print("An error occurred: ", e)
         Logger.exception(e)
+        exit()
 
 
 if __name__ == "__main__":
     main()
+
+# potential user questions
+# How many chemical are in the chemical table?
+# what is going to expire this week?
+# What chemicals are about to expire and what lab and cupboard are they in?
+# who last updated the chemical table?
+# which chemical were added to do place a limit on the query
+
+# what chemical
+# 0                  id
+# 1          cas_number
+# 2       chemical_name
+# 3     chemical_number
+# 4        matter_state
+# 5            quantity
+# 6               added
+# 7              expiry
+# 8   safety_data_sheet
+# 9          coshh_link
+# 10       lab_location
+# 11       storage_temp
+# 12        is_archived
+# 13   project_specific
+# 14           cupboard
+# 15         photo_path
+# 16     chemical_owner
+# 17    last_updated_by
