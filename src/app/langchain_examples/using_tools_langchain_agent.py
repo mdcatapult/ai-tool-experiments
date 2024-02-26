@@ -220,14 +220,14 @@ class SearchTool(BaseModel):
     """Use the tool. when you need to answer questions about which chemicals in the database is hazardous. """
 
     def run(
-        self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
+            self, query: str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool."""
         search = DuckDuckGoSearchRun()
         return search.run(query)
 
     async def _arun(
-        self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
+            self, query: str, run_manager: Optional[AsyncCallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool asynchronously."""
         raise NotImplementedError("search-tool does not support async")
@@ -278,9 +278,9 @@ class CalculateQuantityColumnTool(BaseModel):
         return modified_query_result
 
     def run(
-        self,
-        query: str,
-        run_manager: Optional[CallbackManagerForToolRun] = None,
+            self,
+            query: str,
+            run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
         # Execute the query using the database tool
         # Extract the quantity values from the result

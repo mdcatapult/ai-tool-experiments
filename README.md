@@ -31,6 +31,7 @@ They are there to demonstrate the capabilities of the tools and to provide a sta
     * `python -m src.app.langchain_examples.langchain_agent retrieval` - uses openAI. Demonstrates single prompt enhanced with a web page as RAG
     * `python -m src.app.langchain_examples.langchain_agent agent` - uses openAI. Demonstrates using a tool (DuckDuckGo) along with a prompt to answer some simple questions.
     * `python -m src.app.langchain_examples.open_api_langchain` - uses openAI. Use the DSP atlas openAPI to query the database. This is a bit of a mess and doesn't really work.
+    * `python -m src.app.langchain_examples.using_tools_langchain_agent` - uses openAI. Demonstrates how to use a free text query along wih an sql agent to fetch information from an sql database. The code trains the LLM with example sql queries against the coshh db. Ask SE for login details.
 
 ## Starting the PostgreSQL vector database
 
