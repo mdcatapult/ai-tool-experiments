@@ -1,0 +1,1843 @@
+servers:
+  - url: ''
+openapi: 3.0.3
+info:
+  description: >-
+    An API to handle all of the spatial transcriptomic data processing and
+    analysis for GeoMx data.
+  title: GeoMx spatial transcriptomics API
+  version: 1.0.0
+paths:
+  /geomxdata:
+    get:
+      summary: >-
+        Initialise the transcriptomics GeoMx pipeline output NanoStringGeoMxSet
+        objects.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: dcc_files_directory_path
+          description: Path to directory containing .dcc files
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: pkc_zip_file_path
+          description: Path to zipped .pkc file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: object_file_output_path
+          description: >-
+            The location to output the rds files containing the outputted data
+            objects
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: min_segment_reads_value
+          description: QC and preprocess min_segment_reads_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 1000
+        - name: percent_trimmed_value
+          description: QC and preprocess percent_trimmed_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 80
+        - name: percent_stitched_value
+          description: QC and preprocess percent_stitched_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 80
+        - name: percent_aligned_value
+          description: QC and preprocess percent_aligned_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 75
+        - name: percent_saturation_value
+          description: QC and preprocess percent_saturation_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 50
+        - name: min_negative_count_value
+          description: QC and preprocess min_negative_count_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 1
+        - name: max_ntc_count_value
+          description: QC and preprocess max_ntc_count_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 9000
+        - name: min_nuclei_value
+          description: QC and preprocess min_nuclei_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 20
+        - name: min_area_value
+          description: QC and preprocess min_area_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 10
+        - name: minProbeRatioValue
+          description: BioProbe minProbeRatioValue
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.1
+        - name: PercentFailGrubbsValue
+          description: BioProbe PercentFailGrubbsValue
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 20
+        - name: removeLocalOutliersValue
+          description: BioProbe removeLocalOutliersValue
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: min_loq_value
+          description: LOQ min_loq_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 2
+        - name: cutoff_value
+          description: LOQ cutoff_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 2
+        - name: margin_value
+          description: LOQ margin_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 1
+        - name: gene_detection_rate_cut_off
+          description: Select Filtering gene_detection_rate_cut_off
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.05
+        - name: detection_rate
+          description: Gene Detection rate detection_rate
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.1
+        - name: data_type_value
+          description: Q3 normalization rate data_type_value
+          in: query
+          required: false
+          schema:
+            type: string
+            default: RNA
+        - name: norm_method_value
+          description: Q3 normalization rate norm_method_value
+          in: query
+          required: false
+          schema:
+            type: string
+            default: quant
+        - name: desired_quantile_value
+          description: Q3 normalization rate desired_quantile_value
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.75
+        - name: to_elt_value
+          description: Q3 normalization rate to_elt_value
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+  /sankey/testgr:
+    post:
+      summary: get test_gr
+      description: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: first_col_number
+          description: Sankey first option
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: second_col_number
+          description: Sankey second option
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: third_col_number
+          description: Sankey third option
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: test_gr_out_path
+          description: Path to write the test_gr out to
+          in: query
+          required: true
+          schema:
+            type: string
+  /sankey/testgr/cols:
+    get:
+      summary: >-
+        get testgr column names and allow the user to choose what they want
+        their sankey to be sorted by.
+      description: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: testgr_object_path
+          description: Path to the testgr
+          in: query
+          required: true
+          schema:
+            type: string
+  /sankey/plot:
+    get:
+      summary: create a sankey plot.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: testgr_object_path
+          description: Path to the testgr
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: test_gr_column_index
+          description: Testgr column index to sort the sankey by
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: chart_width
+          description: User chosen config for the chart width size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 14
+        - name: chart_height
+          description: User chosen config for the chart height size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 10
+        - name: label_colour
+          description: User chosen config for the label colour
+          in: query
+          required: false
+          schema:
+            type: string
+            default: red
+        - name: label_size
+          description: User chosen config for the label colour
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 3
+        - name: label_horizontal
+          description: User chosen config for the label colour
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: legend_title_size
+          description: User chosen config for legend title size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 9
+        - name: legend_text_size
+          description: User chosen config for legend text size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 9
+        - name: legend_position
+          description: User chosen config for legend position
+          in: query
+          required: false
+          schema:
+            type: string
+            default: bottom
+  /qchistogram/annotations:
+    get:
+      summary: get annotation options to configure the QC histogram plot.
+      description: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+  /qchistogram/fillby:
+    get:
+      summary: get fillby options to configure the QC histogram plot.
+      description: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+  /qchistogram/plot:
+    get:
+      summary: generate the QC histogram plot.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation
+          description: The users chosen annotation
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: col_by
+          description: The users chosen col_by
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: xintercept
+          description: Chosen xintercept
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: scale_trans
+          description: >-
+            Choose a scale transformation from "asn", "atanh", "boxcox", "date",
+            "exp", "hms", "identity", "log", "log10", "log1p", "log2", "logit",
+            "modulus", "probability", "probit", "pseudo_log", "reciprocal",
+            "reverse", "sqrt" and "time"
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+  /genedetectionrate/plot:
+    get:
+      summary: generate a gene detection rate plot.
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_gene_detection
+          description: .rds file with gene detection rate
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: data_frame_freq
+          description: Data frame frequency
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 1
+              - 5
+              - 10
+              - 20
+              - 30
+              - 50
+          style: form
+          explode: true
+        - name: unlist_lapply
+          description: Vector passed to unlist lapply
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0.01
+              - 0.05
+              - 0.1
+              - 0.2
+              - 0.3
+              - 0.5
+          style: form
+          explode: true
+        - name: geom_bar_stat
+          description: Data aggregation options
+          in: query
+          required: false
+          schema:
+            type: string
+            default: identity
+        - name: geom_text_big_mark
+          description: Number separator
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ','
+        - name: geom_text_vjust
+          description: Vertical text justification
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 1.6
+        - name: geom_text_color
+          description: Text colour
+          in: query
+          required: false
+          schema:
+            type: string
+            default: black
+        - name: geom_text_size
+          description: Text size
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 4
+        - name: scale_fill_gradient2_low
+          description: Scale fill gradient low
+          in: query
+          required: false
+          schema:
+            type: string
+            default: orange2
+        - name: scale_fill_gradient2_mid
+          description: Scale fill gradient mid
+          in: query
+          required: false
+          schema:
+            type: string
+            default: lightblue
+        - name: scale_fill_gradient2_high
+          description: Scale fill gradient high
+          in: query
+          required: false
+          schema:
+            type: string
+            default: dodgerblue3
+        - name: scale_fill_gradient2_midpoint
+          description: Scale fill gradient midpoint
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.65
+        - name: scale_fill_gradient2_limits
+          description: Scale fill gradient limits
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0
+              - 1
+          style: form
+          explode: true
+        - name: scale_y_continuous_limits
+          description: Scale y continuous limits
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0
+              - 1
+          style: form
+          explode: true
+        - name: scale_y_continuous_expand_mult
+          description: Scale y continuous expansion
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0
+              - 0
+          style: form
+          explode: true
+        - name: x_label
+          description: X label
+          in: query
+          required: false
+          schema:
+            type: string
+            default: '% of Segments'
+        - name: y_label
+          description: Y label
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Genes Detected, % of Panel > LOQ
+        - name: geom_text_format
+          in: query
+          required: false
+          schema:
+            type: string
+            default: d
+  /heatmap/plot:
+    get:
+      summary: >-
+        generate a heatmap showing hierarchical clustering of most variable
+        genes.
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: assaydataelement_elt
+          description: elt passed to assayDataElement in log2 transformation
+          in: query
+          required: false
+          schema:
+            type: string
+            default: log_q
+        - name: assaydataapply_margin
+          description: margin for log2 transformation
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 2
+        - name: assaydataapply_base
+          description: base for log2 transformation
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 2
+        - name: assaydataapply_elt
+          description: elt passed to assayDataApply in log2 transformation
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+        - name: cv_elt
+          description: elt used in CV function
+          in: query
+          required: false
+          schema:
+            type: string
+            default: log_q
+        - name: cv_margin
+          description: margin used in CV function
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1
+        - name: sort_decreasing
+          description: sort CD genes by CV value in descending order
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: num_genes
+          description: number of genes to represent in the heatmap
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 5
+        - name: cv_quantile
+          description: quantile of CV values in which genes are identified
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.8
+        - name: heatmap_elt
+          description: elt used in heatmap config
+          in: query
+          required: false
+          schema:
+            type: string
+            default: log_q
+        - name: scale
+          description: heatmap scale
+          in: query
+          required: false
+          schema:
+            type: string
+            default: row
+        - name: show_row_names
+          description: display row names on heatmap
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: show_column_names
+          description: display column names on heatmap
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: border_colour
+          description: heatmap border colour
+          in: query
+          required: false
+          schema:
+            type: string
+            default: NA
+        - name: clustering_method
+          description: heatmap clustering method
+          in: query
+          required: false
+          schema:
+            type: string
+            default: average
+        - name: clustering_distance_rows
+          description: heatmap row clustering distance
+          in: query
+          required: false
+          schema:
+            type: string
+            default: correlation
+        - name: clustering_distance_cols
+          description: heatmap column clustering distance
+          in: query
+          required: false
+          schema:
+            type: string
+            default: euclidean
+        - name: annotation_cols
+          description: pdata columns to annotate
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: font_size
+          description: base font size for the plot
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 6
+  /pca/umap/plot:
+    get:
+      summary: generate a UMAP PCA plot.
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: colour_group
+          description: phenoData column name used for aesthetic mappings colour
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: shape
+          description: phenoData column name used for aesthetic mappings shape
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: elt
+          description: assayData element
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+        - name: geom_point_size
+          description: geom point size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1
+        - name: viridis_scale_colour
+          description: viridis scale to use on the plot
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: colour_array
+          description: colours to enter into the scale colour manual (optional)
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+          style: form
+          explode: true
+  /pca/tsne/plot:
+    get:
+      summary: generate a tSNE PCA plot.
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: colour_group
+          description: phenoData column name used for aesthetic mappings
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: shape
+          description: phenoData column name used for aesthetic mappings shape
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: subset_key
+          description: optional phenoData column name by which to subset GeoMx data
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: subset_value
+          description: optional value from subset_key column by which to subset GeoMx data
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: elt
+          description: elt
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+        - name: geom_point_size
+          description: geom point size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1
+        - name: viridis_scale_colour
+          description: viridis scale to use on the plot (optional)
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ''
+        - name: colour_array
+          description: colours to enter into the scale colour manual (optional)
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+          style: form
+          explode: true
+        - name: perplexity_factor
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.15
+  /dea:
+    get:
+      summary: Perform differential expression analysis using LMM model
+      description: ''
+      responses:
+        '200':
+          description: >-
+            dataframe represented as a json array of objects, each object
+            representing a dataframe row
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotationType
+          description: annotation, e.g. Organ
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation1
+          description: e.g. Liver
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation2
+          description: e.g. Brain
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: intercept
+          description: >-
+            annotation, e.g. Mouse.  Used to control for tissue subsampling. 
+            Where there is one tissue per slide, the slide name should be used
+            as the intercept variable and adjusts for the multiple regions
+            placed per unique tissue. If multiple tissues are placed per slide,
+            the unique tissue name should be used for the intercept variable.
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: slope
+          description: >-
+            analysis of features with (for analysis of features within the same
+            tissue) or without random slope (for analysis of features between
+            tissues, e.g. healthy vs diseased)
+          in: query
+          required: true
+          schema:
+            type: boolean
+  /dea/volcano:
+    post:
+      summary: Create a volcano plot of the results of differential expression analysis
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: results
+          description: >-
+            a json object with a single "results" key whose value is the results
+            of differential expression analysis (i.e. the output of /dea)
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation1
+          description: >-
+            e.g. Liver - must be the same value as the target of the same name
+            passed to /dea to get results
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation2
+          description: >-
+            e.g. Brain - must be the same value as the target of the same name
+            passed to /dea to get results
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: ns_or_fc
+          description: not significant / log fold change boundary
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.5
+        - name: p_value
+          description: P value boundary
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.05
+        - name: fdr_upper
+          description: false discovery rate upper boundary
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.05
+        - name: fdr_lower
+          description: false discovery rate lower boundary
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.001
+        - name: xintercept
+          description: xintercept
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0.5
+              - -0.5
+          style: form
+          explode: true
+        - name: scale_y_continuous_expand_mult
+          description: scale y continuous expansion
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: double
+            default:
+              - 0
+              - 0.05
+          style: form
+          explode: true
+        - name: textual_annotation_upper
+          description: upper boundary for textual annotation
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 6
+        - name: textual_annotation_fdr_upper
+          description: upper not significant boundary for textual annotation
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.001
+        - name: textual_annotation_lower
+          description: lower boundary for textual annotation
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: -4.5
+        - name: textual_annotation_fdr_lower
+          description: lower not significant boundary for textual annotation
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.001
+        - name: textual_annotation_size
+          description: text size for textual annotation
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 4
+        - name: textual_annotation_point_padding
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.15
+        - name: textual_annotation_colour
+          description: text colour for textual annotation
+          in: query
+          required: false
+          schema:
+            type: string
+            default: black
+        - name: textual_annotation_min_segment_length
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.1
+        - name: textual_annotation_box_padding
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.2
+        - name: textual_annotation_max_overlaps
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 50
+        - name: label_size
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 16
+        - name: legend_position
+          description: '"top", "right", "bottom" or "left"'
+          in: query
+          required: false
+          schema:
+            type: string
+            default: bottom
+        - name: viridis_scale
+          description: >-
+            viridis colour scale to use for the plot:  "magma" (or "A"),
+            "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D"), "cividis"
+            (or "E"), "rocket" (or "F"), "mako" (or "G"),"turbo" (or "H")
+          in: query
+          required: false
+          schema:
+            type: string
+            default: D
+  /violin/plot:
+    get:
+      summary: Generate a violin plot of...
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: gene
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: aesx
+          description: >-
+            pdata column value determining what is represented on the x axis of
+            the plot
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: elt
+          description: assayData element
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+        - name: violin_scale
+          description: >-
+            "area" (all violins have the same area), "count" (areas are scaled
+            proportionally to the number of observations), or "width" (all
+            violins have the same maximum width)
+          in: query
+          required: false
+          schema:
+            type: string
+            default: area
+        - name: violin_trim
+          description: trim the tails of the violins to the range of the data
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: stackdir
+          description: >-
+            which direction to stack the dots: "up", "down", "center"(default)
+            or "centerwhole" (centered, but with dots aligned)
+          in: query
+          required: false
+          schema:
+            type: string
+            default: center
+        - name: binwidth
+          description: maximum bn width
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 1
+        - name: dotsize
+          description: diameter of the dots relative to binwidth
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.007
+        - name: positiondodge
+          description: >-
+            dodging width, when different to the width of the individual
+            elements
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.77
+        - name: legend_colour_map
+          description: >-
+            colour map option to use:  "magma" (or "A"), "inferno" (or "B"),
+            "plasma" (or "C"), "viridis" (or "D"), "cividis" (or "E"), "rocket"
+            (or "F"), "mako" (or "G"),"turbo" (or "H")
+          in: query
+          required: false
+          schema:
+            type: string
+            default: D
+  /dea/heatmap:
+    post:
+      summary: Heatmap of results of differential expression analysis
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: results
+          description: >-
+            json results of differential expression analysis (i.e. the output of
+            /dea)
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: path_to_GeoMxData_post_normalisation
+          description: path to .rds file
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: annotation_cols
+          description: >-
+            pdata columns to annotate - should be the same as the
+            test_annotation and intercept_annotation params passed to /dea to
+            generate the results
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+        - name: elt
+          description: assayData element
+          in: query
+          required: false
+          schema:
+            type: string
+            default: q_norm
+        - name: scale
+          description: >-
+            whether the values should be centered and scaled in either the row
+            direction ("row"), the column direction ("column"), or none ("none")
+          in: query
+          required: false
+          schema:
+            type: string
+            default: row
+        - name: show_rownames
+          description: specify whether column names are be shown
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: show_colnames
+          description: specify whether row names are be shown
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: border_colour
+          description: >-
+            color of cell borders on heatmap, use NA if no border should be
+            drawn
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: clustering_method
+          description: >-
+            clustering method used.  This should be (an unambiguous abbreviation
+            of) one of "ward.D", "ward.D2", "single", "complete", "average" (=
+            UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (=
+            UPGMC)
+          in: query
+          required: false
+          schema:
+            type: string
+            default: average
+        - name: clustering_distance_rows
+          description: >-
+            distance measure used in clustering rows: "correlation",
+            "euclidean", "maximum", "manhattan", "canberra", "binary" or
+            "minkowski". If the value is "none" it is assumed that a distance
+            matrix is provided
+          in: query
+          required: false
+          schema:
+            type: string
+            default: correlation
+        - name: clustering_distance_cols
+          description: >-
+            distance measure used in clustering columns. Possible values the
+            same as for clustering_distance_rows
+          in: query
+          required: false
+          schema:
+            type: string
+            default: correlation
+  /gse/dotplot:
+    post:
+      summary: generate a Dot Plot for the Gene Set Enhancement result
+      description: ''
+      responses:
+        '200':
+          description: A binary encoded png (string)
+          content:
+            image/png:
+              schema:
+                type: object
+        '418':
+          description: >-
+            A JSON object with status and message "no term enriched under
+            specific pValue cutoff"
+          content:
+            image/png:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            image/png:
+              schema:
+                type: object
+      parameters:
+        - name: results
+          description: >-
+            a json object with a single "results" key whose value is the results
+            of differential expression analysis (i.e. the output of /dea)
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: gene_col_name
+          description: the field name in results for the gene name
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Gene
+        - name: value_col_name
+          description: the field name in results for the estimated value
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Estimate
+        - name: pvalue_col_name
+          description: the field name in results for the pvalue
+          in: query
+          required: false
+          schema:
+            type: string
+            default: FDR
+        - name: ont
+          description: >-
+            GO ontology. "BP" (Biological Process), "MF" (Molecular Function),
+            "CC" (Cellular Component) or "ALL"
+          in: query
+          required: false
+          schema:
+            type: string
+            default: BP
+        - name: key_type
+          in: query
+          required: false
+          schema:
+            type: string
+            default: SYMBOL
+        - name: min_gs_size
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 3
+        - name: max_gs_size
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 800
+        - name: pvalue_cutoff
+          description: Filter out pvalue that are larger than or equal to the cutoff
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 0.05
+        - name: org_db
+          description: 'Mouse: org.Mm.eg.db; Human: org.Hs.eg.db'
+          in: query
+          required: false
+          schema:
+            type: string
+            default: org.Mm.eg.db
+        - name: p_adjust_method
+          in: query
+          required: false
+          schema:
+            type: string
+            default: BH
+        - name: show_category
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+            default: 10
+  /pdata/cols:
+    get:
+      summary: >-
+        get pdata column names from a geomx data object.  Used in both Sankey
+        and heatmap plots, alowing the user to choose dataframe columns to
+        configure the plots.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+  /pdata/col:
+    get:
+      summary: >-
+        get pdata unique values from a geomx data object column.  Used in plot
+        configuration.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: col_name
+          description: >-
+            Column of geomx data object for which unique values are to be
+            returned
+          in: query
+          required: true
+          schema:
+            type: string
+  /genes:
+    get:
+      summary: get gene names from a geomx data object
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: data_object_path
+          in: query
+          required: true
+          schema:
+            type: string
+  /genecounts:
+    get:
+      summary: get formatted gene names and counts from a geomx data object
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            application/json:
+              schema:
+                type: object
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+  /genecountsraw:
+    get:
+      summary: get gene names and counts from a geomx data object
+      description: ''
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+      parameters:
+        - name: data_object_path
+          description: Path to the geomx data object
+          in: query
+          required: true
+          schema:
+            type: string
+  /qc/samples:
+    get:
+      summary: get CSV file containing samples that pass QC.
+      description: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            text/csv:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Default response.
+          content:
+            text/csv:
+              schema:
+                type: string
+      parameters:
+        - name: data_object_path
+          description: Path to the RDS file containing the geomx post qc data
+          in: query
+          required: true
+          schema:
+            type: string
