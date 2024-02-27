@@ -32,6 +32,8 @@ They are there to demonstrate the capabilities of the tools and to provide a sta
     * `python -m src.app.langchain_examples.langchain_agent agent` - uses openAI. Demonstrates using a tool (DuckDuckGo) along with a prompt to answer some simple questions.
     * `python -m src.app.langchain_examples.open_api_langchain` - uses openAI. Use the DSP atlas openAPI to query the database. This is a bit of a mess and doesn't really work.
     * `python -m src.app.langchain_examples.using_tools_langchain_agent` - uses openAI. Demonstrates how to use a free text query along wih an sql agent to fetch information from an sql database. The code trains the LLM with example sql queries against the coshh db. Ask SE for login details.
+    
+Note: If using the `using_tools_langchain_agent` to query quantities with something like *What is the total quantity of Acetone* then you need to make sure that the chemical name matches one in the db including capital letters in the correct place.
 
 ## Starting the PostgreSQL vector database
 
@@ -59,3 +61,13 @@ CREATE TABLE cro_vector_db (
 );
 ```
 3. Manually, create the extension on PSQL if it doesn't already exist: `CREATE EXTENSION IF NOT EXISTS vector;` Then exit the psql shell and the docker image.
+
+
+## Example queries for the sql agent against the coshh db
+* Is there a chemical called something like Ethylene what lab and cupboard is it stored in and how much is in each cupboard
+* Is there a chemical like Nitrocellulose in the lab and what is the storage temperature
+* How many chemicals are there in total excluding expired ones
+* Is there a chemical like Nitrocellulose and what is the actual name
+* What is the name lab and cupboard of chemicals expiring in the next week
+* Are there any chemicals that have expired but have not been archived and what are their names lab and cupboard
+* Were any chemicals updated today and list the actual names lab location and cupboard
