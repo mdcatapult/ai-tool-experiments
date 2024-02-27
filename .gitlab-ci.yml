@@ -75,7 +75,7 @@ publish:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-publish-main:
+publish-tags:
   stage: publish
   image:
     name: gcr.io/kaniko-project/executor:v1.18.0-debug
@@ -96,12 +96,34 @@ publish-main:
         --cache-ttl=336h
         --cleanup
         --compressed-caching=false
-
   only:
     refs:
       - tags
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
+
+publish-main:
+  stage: publish
+  image:
+    name: gcr.io/kaniko-project/executor:v1.18.0-debug
+    entrypoint: [""]
+  tags:
+    - saas-linux-medium-amd64
+  before_script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+  script:
+    - >
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}"
+      --cache=true
+      --cache-copy-layers=true
+      --cache-ttl=336h
+      --cleanup
+      --compressed-caching=false
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'main'
 
 release:
   stage: release
