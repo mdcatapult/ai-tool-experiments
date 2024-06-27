@@ -71,3 +71,6 @@ CREATE TABLE cro_vector_db (
 * What is the name lab and cupboard of chemicals expiring in the next week
 * Are there any chemicals that have expired but have not been archived and what are their names lab and cupboard
 * Were any chemicals updated today and list the actual names lab location and cupboard
+
+## License
+This project is licensed under the terms of the Apache 2 license, which can be found in the repository as `LICENSE.txt`
